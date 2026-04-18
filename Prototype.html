@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CineSeat: Theatre Seat Booking (Expanded Seats)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none; /* avoid accidental selection on seats */
+        }
+
+        body {
+            background: linear-gradient(145deg, #10141c 0%, #0b0f17 100%);
+            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.5rem;
+        }
+
+        /* main cinema card */
+        .cinema-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(18, 25, 35, 0.75);
+            backdrop-filter: blur(2px);
+            border-radius: 3rem;
+            padding: 1.8rem 2rem 2rem 2rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 0.2rem 0;
+            background: linear-gradient(135deg, #F9F3D9, #FFD966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            display: inline-block;
+        }
+
+        .theatre-brand {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed rgba(255, 215, 120, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .hall-tag {
+            color: #bfbfcf;
+            background: #1e2a36;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* screen area */
+        .screen-section {
+            text-align: center;
+            margin: 1.2rem 0 1.5rem 0;
+        }
+
+        .screen-label {
+            display: inline-block;
+            background: #2c3e2f;
+            padding: 0.25rem 1.5rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #c0ffb0;
+            backdrop-filter: blur(2px);
+            margin-bottom: 8px;
+        }
+
+        .screen {
+            background: linear-gradient(0deg, #2b2f3e, #11161f);
+            width: 100%;
+            height: 75px;
+            border-radius: 40% 40% 16px 16px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            position: relative;
+            border-bottom: 3px solid #ffd966;
+        }
+
+        .screen::after {
+            content: "SCREEN";
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #b9b9dd;
+            letter-spacing: 3px;
+        }
+
+        /* seating area - expanded to support more rows and columns */
+        .seating-area {
+            margin: 2rem 0 1.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 2rem;
+            padding: 1.5rem 0.5rem;
+            overflow-x: auto;
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        /* seat styling */
+        .seat {
+            width: 70px;
+            height: 70px;
+            background: #2c3e3f;
+            background-image: radial-gradient(circle at 35% 30%, rgba(255,255,200,0.1) 2%, transparent 2.5%);
+            border-radius: 20px 20px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 0 #141a1f;
+            border: 1px solid rgba(255,215,0,0.3);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(2px);
+        }
+
+        .seat span:first-child {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .seat small {
+            font-size: 0.65rem;
+            opacity: 0.7;
+        }
+
+        /* seat states */
+        .seat.available {
+            background: #2a6f6f;
+            background: linear-gradient(145deg, #2b7a6e, #1f5e54);
+            box-shadow: 0 5px 0 #12322b;
+            cursor: pointer;
+        }
+
+        .seat.available:hover {
+            transform: scale(1.02);
+            background: #379e8a;
+            box-shadow: 0 3px 0 #1d443c;
+            filter: brightness(1.05);
+        }
+
+        .seat.booked {
+            background: #5c4a3a;
+            background: linear-gradient(145deg, #5e4a38, #493a2c);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4), 0 2px 3px rgba(0,0,0,0.2);
+            cursor: not-allowed;
+            filter: grayscale(0.1);
+            opacity: 0.7;
+            border-color: #735e48;
+        }
+
+        .seat.selected {
+            background: #f5b042;
+            background: radial-gradient(circle at 30% 25%, #ffcd7e, #e5941e);
+            box-shadow: 0 0 0 2px #fff3cf, 0 4px 8px black;
+            color: #2d1f00;
+            transform: scale(1.01);
+        }
+
+        .seat.selected span, .seat.selected small {
+            color: #221c0e;
+            text-shadow: 0 0 1px white;
+        }
+
+        /* legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0 1.5rem;
+            background: #0f141cb3;
+            padding: 0.6rem 1rem;
+            border-radius: 60px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #ddd;
+        }
+
+        .legend-box {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+
+        .legend-box.avail {
+            background: #2b7a6e;
+            border: 1px solid #5fbcac;
+        }
+        .legend-box.book {
+            background: #5c4a3a;
+        }
+        .legend-box.sel {
+            background: #f5b042;
+        }
+
+        /* booking panel */
+        .booking-panel {
+            background: #0e1620cc;
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(255, 200, 100, 0.2);
+            margin-top: 0.5rem;
+        }
+
+        .selection-info {
+            background: #00000055;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+        }
+
+        .selected-list {
+            color: #ffdb8e;
+            font-weight: 600;
+            word-break: keep-all;
+        }
+
+        .btn-book {
+            background: #f0a72a;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #1d2c1a;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #8b5a1a;
+            font-family: inherit;
+        }
+
+        .btn-book:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #8b5a1a;
+        }
+
+        .btn-book:disabled {
+            background: #6a6a6a;
+            box-shadow: 0 4px 0 #3a3a3a;
+            cursor: default;
+            transform: none;
+            opacity: 0.5;
+        }
+
+        .reset-btn {
+            background: #2f3e46;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            color: #f5e2c1;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.1s;
+        }
+
+        .reset-btn:active {
+            background: #1f2c32;
+        }
+
+        .status-msg {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #cbd5e6;
+            background: #00000040;
+            border-radius: 40px;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 860px) {
+            .cinema-container {
+                padding: 1rem;
+            }
+            .seat {
+                width: 55px;
+                height: 55px;
+                font-size: 0.7rem;
+            }
+            .row {
+                gap: 0.7rem;
+            }
+            .btn-book, .reset-btn {
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .seat {
+                width: 48px;
+                height: 48px;
+                font-size: 0.65rem;
+            }
+            .seat span:first-child {
+                font-size: 0.8rem;
+            }
+            .row {
+                gap: 0.5rem;
+            }
+        }
+        
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1rem;
+            color: #7e8c8f;
+        }
+    </style>
+</head>
+<body>
+<div class="cinema-container">
+    <div class="theatre-brand">
+        <h1>🎬 CineSeat</h1>
+        <div class="hall-tag">Hall: GALAXY 1 | DOLBY ATMOS</div>
+    </div>
+
+    <!-- SCREEN reference: clearly indicating the front -->
+    <div class="screen-section">
+        <div class="screen-label">⬇️ FRONT OF THEATRE — SCREEN ⬇️</div>
+        <div class="screen"></div>
+    </div>
+
+    <!-- Seats grid: EXPANDED LAYOUT -->
+    <!-- ORIGINAL was 4 rows (A,B,C,D) x 3 columns (1,2,3) -->
+    <!-- NOW: Added 4 more rows on each side? Actually user requested: "add 4 more rows on each side and 5 columns. Then add 3 more rows and columns in the original part" -->
+    <!-- Interpretation: 
+         - "add 4 more rows on each side" -> means left and right sections: each with 4 rows and 5 columns
+         - "add 3 more rows and columns in the original part" -> original 4x3 becomes 7x6 (added 3 rows, 3 columns)
+         So total layout: LEFT block (4x5), CENTER block (7x6), RIGHT block (4x5)
+    -->
+    <div class="seating-area">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- LEFT SECTION (4 rows x 5 columns) -->
+            <div style="text-align: center; margin-bottom: -0.5rem;">
+                <span style="background:#1e2a36; padding:0.2rem 1rem; border-radius:30px; font-size:0.75rem; color:#ffd966;">🎭 LEFT SECTION (4 rows x 5 cols)</span>
+            </div>
+            <div id="leftGrid" class="grid"></div>
+            
+            <!-- CENTER SECTION (7 rows x 6 columns) - expanded from original 4x3 -->
+            <div style="text-align: center; margin-bottom: -0.5rem; margin-top: 0.5rem;">
+                <span style="background:#1e2a36; padding:0.2rem 1rem; border-radius:30px; font-size:0.75rem; color:#ffd966;">🎬 CENTER STAGE (7 rows x 6 cols) | Premium View</span>
+            </div>
+            <div id="centerGrid" class="grid"></div>
+            
+            <!-- RIGHT SECTION (4 rows x 5 columns) -->
+            <div style="text-align: center; margin-bottom: -0.5rem; margin-top: 0.5rem;">
+                <span style="background:#1e2a36; padding:0.2rem 1rem; border-radius:30px; font-size:0.75rem; color:#ffd966;">🎭 RIGHT SECTION (4 rows x 5 cols)</span>
+            </div>
+            <div id="rightGrid" class="grid"></div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item"><div class="legend-box avail"></div> <span>Available</span></div>
+        <div class="legend-item"><div class="legend-box book"></div> <span>Booked</span></div>
+        <div class="legend-item"><div class="legend-box sel"></div> <span>Your selection</span></div>
+    </div>
+
+    <!-- booking control panel -->
+    <div class="booking-panel">
+        <div class="selection-info">
+            📍 Selected seats: <span id="selectedSeatsDisplay" class="selected-list">None</span>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="reset-btn" id="resetSelectionBtn">🗑️ Clear selection</button>
+            <button class="btn-book" id="confirmBookingBtn">🎟️ Confirm booking</button>
+        </div>
+    </div>
+    <div id="statusMessage" class="status-msg">
+        ✅ Click on any available seat to reserve. Bookings are stored in database (local simulation).
+    </div>
+    <footer>⭐ Expanded theatre: LEFT (4x5) | CENTER (7x6) | RIGHT (4x5) — Total 82 seats. Database simulation with IndexedDB (persistent bookings). Seats remain booked after refresh.</footer>
+</div>
+
+<script>
+    (function() {
+        // ---- EXPANDED CONFIGURATION ----
+        // LEFT BLOCK: 4 rows, 5 columns. Seat IDs: L1_1 to L4_5
+        const LEFT_ROWS = 4;
+        const LEFT_COLS = 5;
+        // RIGHT BLOCK: 4 rows, 5 columns. Seat IDs: R1_1 to R4_5
+        const RIGHT_ROWS = 4;
+        const RIGHT_COLS = 5;
+        // CENTER BLOCK (original expanded): originally 4 rows (A,B,C,D) x 3 cols -> add 3 rows & 3 cols => 7 rows x 6 cols
+        const CENTER_ROWS = 7;
+        const CENTER_COLS = 6;
+        const CENTER_ROW_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];  // 7 rows
+        
+        // ---- DATABASE (IndexedDB) - persistent booking storage ----
+        const DB_NAME = 'CineSeatExpandedDB';
+        const DB_VERSION = 2;
+        const STORE_NAME = 'bookingsExpanded';
+
+        let db = null;
+        // In-memory state: bookedSeats Set (seatId strings)
+        let bookedSeatsSet = new Set();
+        // Currently selected seats (temporary, before confirm)
+        let selectedSeatsSet = new Set();
+
+        // DOM elements
+        const leftGridEl = document.getElementById('leftGrid');
+        const centerGridEl = document.getElementById('centerGrid');
+        const rightGridEl = document.getElementById('rightGrid');
+        const selectedSeatsDisplaySpan = document.getElementById('selectedSeatsDisplay');
+        const confirmBtn = document.getElementById('confirmBookingBtn');
+        const resetBtn = document.getElementById('resetSelectionBtn');
+        const statusMsgDiv = document.getElementById('statusMessage');
+
+        // Helper: Show temporary status
+        let statusTimeout = null;
+        function setStatusMessage(msg, isError = false) {
+            if (statusTimeout) clearTimeout(statusTimeout);
+            statusMsgDiv.innerHTML = isError ? `⚠️ ${msg}` : `✨ ${msg}`;
+            statusTimeout = setTimeout(() => {
+                if (statusMsgDiv) statusMsgDiv.innerHTML = `💺 Click on any available seat to book. Bookings stored in database.`;
+                statusTimeout = null;
+            }, 3000);
+        }
+
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = (event) => {
+                    console.error("IndexedDB error", event);
+                    reject("Could not open database. Fallback to memory only.");
+                };
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (event) => {
+                    const dbRef = event.target.result;
+                    if (!dbRef.objectStoreNames.contains(STORE_NAME)) {
+                        const store = dbRef.createObjectStore(STORE_NAME, { keyPath: 'seatId' });
+                        store.createIndex('by_seat', 'seatId', { unique: true });
+                    }
+                };
+            });
+        }
+
+        // Load booked seats from IndexedDB
+        async function loadBookedSeats() {
+            if (!db) return new Set();
+            return new Promise((resolve) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => {
+                    const records = request.result || [];
+                    const bookedSet = new Set();
+                    records.forEach(record => {
+                        if (record.seatId) bookedSet.add(record.seatId);
+                    });
+                    resolve(bookedSet);
+                };
+                request.onerror = () => {
+                    console.warn("Failed to load bookings");
+                    resolve(new Set());
+                };
+            });
+        }
+
+        // Save a booking (single seat) to DB
+        async function saveBookingToDB(seatId) {
+            if (!db) return false;
+            return new Promise((resolve) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const record = { seatId: seatId, bookedAt: new Date().toISOString() };
+                const request = store.add(record);
+                request.onsuccess = () => resolve(true);
+                request.onerror = (err) => {
+                    console.warn("could not add booking, maybe duplicate?", err);
+                    resolve(false);
+                };
+            });
+        }
+
+        // Helper: generate seat element with click handler
+        function createSeatElement(seatId, displayLabel, isBooked, isSelected) {
+            const seatDiv = document.createElement('div');
+            seatDiv.className = `seat ${isBooked ? 'booked' : (isSelected ? 'selected' : 'available')}`;
+            seatDiv.setAttribute('data-seat-id', seatId);
+            
+            const mainSpan = document.createElement('span');
+            mainSpan.textContent = displayLabel;
+            const smallSpan = document.createElement('small');
+            smallSpan.textContent = isBooked ? 'TAKEN' : (isSelected ? 'PICKED' : 'FREE');
+            
+            seatDiv.appendChild(mainSpan);
+            seatDiv.appendChild(smallSpan);
+            
+            if (!isBooked) {
+                seatDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSeatSelection(seatId);
+                });
+            } else {
+                seatDiv.style.cursor = 'default';
+            }
+            return seatDiv;
+        }
+
+        // Render LEFT block (4 rows, 5 cols)
+        function renderLeftBlock() {
+            leftGridEl.innerHTML = '';
+            for (let r = 1; r <= LEFT_ROWS; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                for (let c = 1; c <= LEFT_COLS; c++) {
+                    const seatId = `L${r}_${c}`;
+                    const displayLabel = `L${r}-${c}`;
+                    const isBooked = bookedSeatsSet.has(seatId);
+                    const isSelected = selectedSeatsSet.has(seatId);
+                    const seatDiv = createSeatElement(seatId, displayLabel, isBooked, isSelected);
+                    rowDiv.appendChild(seatDiv);
+                }
+                leftGridEl.appendChild(rowDiv);
+            }
+        }
+
+        // Render CENTER block (7 rows, 6 cols)
+        function renderCenterBlock() {
+            centerGridEl.innerHTML = '';
+            for (let r = 0; r < CENTER_ROWS; r++) {
+                const rowLetter = CENTER_ROW_LETTERS[r];
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                for (let c = 1; c <= CENTER_COLS; c++) {
+                    const seatId = `${rowLetter}${c}`;
+                    const displayLabel = `${rowLetter}${c}`;
+                    const isBooked = bookedSeatsSet.has(seatId);
+                    const isSelected = selectedSeatsSet.has(seatId);
+                    const seatDiv = createSeatElement(seatId, displayLabel, isBooked, isSelected);
+                    rowDiv.appendChild(seatDiv);
+                }
+                centerGridEl.appendChild(rowDiv);
+            }
+        }
+
+        // Render RIGHT block (4 rows, 5 cols)
+        function renderRightBlock() {
+            rightGridEl.innerHTML = '';
+            for (let r = 1; r <= RIGHT_ROWS; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                for (let c = 1; c <= RIGHT_COLS; c++) {
+                    const seatId = `R${r}_${c}`;
+                    const displayLabel = `R${r}-${c}`;
+                    const isBooked = bookedSeatsSet.has(seatId);
+                    const isSelected = selectedSeatsSet.has(seatId);
+                    const seatDiv = createSeatElement(seatId, displayLabel, isBooked, isSelected);
+                    rowDiv.appendChild(seatDiv);
+                }
+                rightGridEl.appendChild(rowDiv);
+            }
+        }
+
+        // Render all blocks
+        function renderAllSeats() {
+            renderLeftBlock();
+            renderCenterBlock();
+            renderRightBlock();
+            updateSelectedDisplay();
+        }
+
+        // toggle selection for a seat (only if not booked)
+        function toggleSeatSelection(seatId) {
+            if (bookedSeatsSet.has(seatId)) {
+                setStatusMessage(`Seat ${seatId} is already booked!`, true);
+                return;
+            }
+            if (selectedSeatsSet.has(seatId)) {
+                selectedSeatsSet.delete(seatId);
+                setStatusMessage(`Removed ${seatId} from selection`, false);
+            } else {
+                selectedSeatsSet.add(seatId);
+                setStatusMessage(`Added ${seatId} to your selection`, false);
+            }
+            renderAllSeats();
+        }
+
+        function updateSelectedDisplay() {
+            if (selectedSeatsSet.size === 0) {
+                selectedSeatsDisplaySpan.textContent = 'None';
+            } else {
+                const sorted = Array.from(selectedSeatsSet).sort();
+                selectedSeatsDisplaySpan.textContent = sorted.join(', ');
+            }
+            confirmBtn.disabled = (selectedSeatsSet.size === 0);
+        }
+
+        // Clear current selection (without affecting DB)
+        function clearSelection() {
+            if (selectedSeatsSet.size === 0) {
+                setStatusMessage("No seats selected to clear", false);
+                return;
+            }
+            selectedSeatsSet.clear();
+            renderAllSeats();
+            setStatusMessage("Selection cleared", false);
+        }
+
+        // Confirm booking: writes selected seats to database and updates booked set
+        async function confirmBooking() {
+            if (selectedSeatsSet.size === 0) {
+                setStatusMessage("No seats selected to book.", true);
+                return;
+            }
+            const seatsToBook = Array.from(selectedSeatsSet).filter(seatId => !bookedSeatsSet.has(seatId));
+            if (seatsToBook.length === 0) {
+                setStatusMessage("All selected seats were already booked! Reloading state...", true);
+                await refreshBookingsFromDB();
+                renderAllSeats();
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            for (const seatId of seatsToBook) {
+                const saved = await saveBookingToDB(seatId);
+                if (saved) {
+                    bookedSeatsSet.add(seatId);
+                    successCount++;
+                } else {
+                    failCount++;
+                }
+            }
+            
+            if (successCount > 0) {
+                const newlyBookedSeats = seatsToBook.filter(seatId => bookedSeatsSet.has(seatId));
+                for (const bookedId of newlyBookedSeats) {
+                    selectedSeatsSet.delete(bookedId);
+                }
+                renderAllSeats();
+                setStatusMessage(`🎉 Successfully booked ${successCount} seat(s)! ${failCount > 0 ? `Failed: ${failCount}` : ''}`);
+            } else {
+                setStatusMessage(`Booking failed. Could not save seats.`, true);
+            }
+        }
+
+        // Refresh booked seats from database (sync)
+        async function refreshBookingsFromDB() {
+            const freshBooked = await loadBookedSeats();
+            bookedSeatsSet = freshBooked;
+            for (let sel of selectedSeatsSet) {
+                if (bookedSeatsSet.has(sel)) {
+                    selectedSeatsSet.delete(sel);
+                }
+            }
+            renderAllSeats();
+        }
+
+        // Seed demo bookings if database is empty (to show some booked seats)
+        async function seedDemoBookingsIfEmpty() {
+            if (!db) return;
+            const existing = await loadBookedSeats();
+            if (existing.size === 0) {
+                const demoSeats = [
+                    'A3', 'C4', 'E2', 'L2_3', 'R1_2', 'B6', 'F5', 'L4_1', 'G3', 'D4', 'R3_4'
+                ];
+                for (const seat of demoSeats) {
+                    await saveBookingToDB(seat);
+                    bookedSeatsSet.add(seat);
+                }
+                renderAllSeats();
+                setStatusMessage("🎬 Demo database seeded with a few pre-booked seats (A3, C4, L2_3, R1_2, etc.)");
+            } else {
+                bookedSeatsSet = existing;
+                renderAllSeats();
+            }
+        }
+
+        // Main initialization flow
+        async function init() {
+            try {
+                await initDB();
+                await refreshBookingsFromDB();
+                if (bookedSeatsSet.size === 0) {
+                    await seedDemoBookingsIfEmpty();
+                } else {
+                    renderAllSeats();
+                }
+            } catch (err) {
+                console.warn("DB failed, using memory-only fallback", err);
+                bookedSeatsSet = new Set(['A3', 'C4', 'E2', 'L2_3', 'R1_2']);
+                renderAllSeats();
+                setStatusMessage("⚠️ Using in-memory simulation (database unavailable). Bookings will reset on refresh.", true);
+            }
+            
+            confirmBtn.addEventListener('click', () => confirmBooking());
+            resetBtn.addEventListener('click', () => clearSelection());
+        }
+        
+        init().catch(e => {
+            console.error(e);
+            bookedSeatsSet = new Set(['A3', 'C4', 'L2_3', 'R1_2']);
+            renderAllSeats();
+            setStatusMessage("Initialization error, but seats displayed in demo mode.", true);
+            confirmBtn.addEventListener('click', () => {
+                if(selectedSeatsSet.size === 0) return;
+                const toBook = Array.from(selectedSeatsSet);
+                for(let s of toBook) {
+                    if(!bookedSeatsSet.has(s)) {
+                        bookedSeatsSet.add(s);
+                        selectedSeatsSet.delete(s);
+                    }
+                }
+                renderAllSeats();
+                setStatusMessage("Booked (memory only)");
+            });
+            resetBtn.addEventListener('click', () => clearSelection());
+        });
+    })();
+</script>
+</body>
+</html>
