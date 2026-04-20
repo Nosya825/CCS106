@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>MCIA Flow - Mactan Cebu Airport</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+/* PHONE CONTAINER */
+.app {
+  width: 390px;
+  height: 780px;
+  background: #f5f7fb;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+/* HERO SECTION */
+.hero {
+  height: 240px;
+  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  position: relative;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.35);
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+}
+
+/* TOP RIGHT SEARCH */
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search {
+  background: white;
+  color: #0a7e8c;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* TEXT */
+.hero-text h1 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.hero-text p {
+  font-size: 14px;
+  margin: 6px 0 10px;
+  opacity: 0.9;
+}
+
+/* BUTTON */
+.rewards {
+  background: white;
+  color: #0a7e8c;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  padding: 16px 16px 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title small {
+  font-size: 12px;
+  font-weight: normal;
+  color: #0a7e8c;
+}
+
+/* SCROLLABLE CONTENT */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+/* PAGES */
+.page {
+  display: none;
+}
+
+.page.active-page {
+  display: block;
+}
+
+/* FLIGHT CARD */
+.flight-card {
+  background: linear-gradient(135deg, #0b5e7c, #0a7e8c);
+  margin: 8px 16px;
+  padding: 18px;
+  border-radius: 28px;
+  color: white;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.flight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.flight-code {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.status-badge {
+  background: #ffb347;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e2a3a;
+}
+
+.destination {
+  font-size: 14px;
+  margin: 8px 0;
+  opacity: 0.95;
+}
+
+.gate-time-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  font-size: 13px;
+}
+
+/* CARDS GRID */
+.cards-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 16px 8px 16px;
+}
+
+.info-card {
+  background: white;
+  border-radius: 20px;
+  padding: 14px;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e1e8ed;
+}
+
+.wait-number {
+  font-size: 32px;
+  font-weight: 800;
+  color: #f5a623;
+}
+
+.nav-button {
+  background: #0a7e8c;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 40px;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ALERT */
+.alert-banner {
+  background: #fff3e0;
+  margin: 12px 16px;
+  padding: 12px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: 4px solid #ff9800;
+  font-size: 13px;
+}
+
+/* LAYOVER ITEMS */
+.layover-item {
+  background: white;
+  margin: 8px 16px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+
+/* TRIP ITEMS */
+.trip-item {
+  background: white;
+  margin: 8px 16px;
+  padding: 14px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.trip-icon {
+  font-size: 28px;
+}
+
+.trip-details {
+  flex: 1;
+}
+
+.trip-details h4 {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.trip-details p {
+  font-size: 12px;
+  color: #6c7a8e;
+}
+
+/* MAP */
+.map-container {
+  background: #e8f0fe;
+  margin: 16px;
+  border-radius: 24px;
+  padding: 20px;
+  text-align: center;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.map-terminal {
+  background: white;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* PROFILE */
+.profile-header {
+  background: white;
+  margin: 16px;
+  padding: 20px;
+  border-radius: 28px;
+  text-align: center;
+}
+
+.avatar {
+  font-size: 56px;
+  margin-bottom: 10px;
+}
+
+.points-card {
+  background: linear-gradient(135deg, #f5a623, #ff6b6b);
+  margin: 16px;
+  padding: 18px;
+  border-radius: 24px;
+  color: white;
+  text-align: center;
+}
+
+.points-number {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+/* BOTTOM NAVIGATION */
+.bottom-nav {
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 16px 18px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.nav-item {
+  text-align: center;
+  font-size: 11px;
+  color: #8e9aaf;
+  transition: all 0.2s;
+  cursor: pointer;
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 20px;
+}
+
+.nav-item.active {
+  color: #0a7e8c;
+  font-weight: 600;
+  background: #0a7e8c10;
+}
+
+.nav-icon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* MESSAGE AREA */
+#navMessage {
+  margin: 16px;
+  background: #e8f0fe;
+  padding: 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  text-align: center;
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <div class="overlay">
+      <div class="top-bar">
+        <div class="search" id="searchBtn">🔍</div>
+      </div>
+      <div class="hero-text">
+        <h1>Hello, Juan! 🇵🇭</h1>
+        <p id="heroSubtitle">Mactan-Cebu International Airport</p>
+        <button class="rewards" id="rewardsBtn">🎖 GetGo Rewards</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE MENU IS COMPLETELY REMOVED -->
+
+  <!-- SECTION TITLE -->
+  <div class="section-title" id="sectionTitle">
+    Live Flight Status <small>▼</small>
+  </div>
+
+  <!-- SCROLLABLE CONTENT -->
+  <div class="scroll-content">
+    
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active-page">
+      <div class="flight-card" id="flightCard">
+        <div class="flight-row">
+          <span class="flight-code">5J 584</span>
+          <span class="status-badge" id="flightStatus">On Time</span>
+        </div>
+        <div class="destination">
+          ✈️ Mactan-Cebu (CEB) → Manila (MNL)
+        </div>
+        <div class="gate-time-info">
+          <span>🕒 14:25</span>
+          <span>🚪 Gate <strong id="gateNumber">B3</strong></span>
+        </div>
+      </div>
+
+      <div id="alertContainer"></div>
+
+      <div class="cards-grid">
+        <div class="info-card">
+          <div style="font-size: 12px; color: #6c7a8e;">Security Wait</div>
+          <div class="wait-number" id="waitTime">8</div>
+          <div>minutes</div>
+          <button class="nav-button" id="navSecurityBtn">Navigate →</button>
+        </div>
+        <div class="info-card">
+          <div style="font-size: 12px; color: #6c7a8e;">Nearby</div>
+          <div style="font-size: 24px; margin: 8px 0;">🍗🥭</div>
+          <div>Jollibee • Pasalubong</div>
+          <button class="nav-button" id="exploreBtn" style="background:#8B4513;">Explore →</button>
+        </div>
+      </div>
+
+      <div class="section-title" style="font-size: 18px; padding-top: 8px;">⏱️ Layover (2h 15m)</div>
+      
+      <div class="layover-item">
+        <div>🦋 Butterfly Garden • 5 min walk</div>
+        <span>→</span>
+      </div>
+      <div class="layover-item">
+        <div>🍗 Jollibee • Order ahead</div>
+        <span>→</span>
+      </div>
+      <div class="layover-item">
+        <div>🥭 Cebu Gift Shop • Dried mangoes</div>
+        <span>→</span>
+      </div>
+
+      <div id="navMessage"></div>
+    </div>
+
+    <!-- TRIP PAGE -->
+    <div id="tripPage" class="page">
+      <div class="flight-card" style="margin-top: 16px;">
+        <div class="flight-row">
+          <span class="flight-code">5J 584</span>
+          <span class="status-badge">Confirmed</span>
+        </div>
+        <div class="destination">Cebu (CEB) → Manila (MNL)</div>
+        <div class="gate-time-info">
+          <span>📅 May 4, 2026</span>
+          <span>💺 Seat 12A</span>
+        </div>
+      </div>
+
+      <div class="trip-item">
+        <div class="trip-icon">🎟️</div>
+        <div class="trip-details">
+          <h4>Boarding Pass</h4>
+          <p>Tap to view QR code</p>
+        </div>
+        <span>→</span>
+      </div>
+      <div class="trip-item">
+        <div class="trip-icon">🧳</div>
+        <div class="trip-details">
+          <h4>Baggage Tracking</h4>
+          <p>1 bag • Tag: CEB789123</p>
+        </div>
+        <span>→</span>
+      </div>
+      <div class="trip-item">
+        <div class="trip-icon">✅</div>
+        <div class="trip-details">
+          <h4>Check-in Status</h4>
+          <p>Checked in • Seat 12A</p>
+        </div>
+        <span>→</span>
+      </div>
+    </div>
+
+    <!-- MAP PAGE -->
+    <div id="mapPage" class="page">
+      <div class="map-container">
+        <div style="font-size: 40px; margin-bottom: 8px;">🗺️</div>
+        <h3>Mactan-Cebu Airport</h3>
+        <p style="font-size: 12px; color: #6c7a8e;">Terminal 2 • Near Gate B3</p>
+        <div class="map-grid">
+          <div class="map-terminal" style="background:#0a7e8c; color:white;">📍 T2 (You are here)</div>
+          <div class="map-terminal">📍 Terminal 1</div>
+          <div class="map-terminal">🍗 Jollibee</div>
+          <div class="map-terminal">🥭 Pasalubong</div>
+        </div>
+      </div>
+      <div class="layover-item">
+        <div>🚻 Restroom • 2 min</div>
+        <span>→</span>
+      </div>
+      <div class="layover-item">
+        <div>💺 PAGSS Lounge • 3 min</div>
+        <span>→</span>
+      </div>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div id="profilePage" class="page">
+      <div class="profile-header">
+        <div class="avatar">👤</div>
+        <h3>Juan Dela Cruz</h3>
+        <p>juan@email.com</p>
+      </div>
+      <div class="points-card">
+        <div>GetGo Points</div>
+        <div class="points-number">5,280</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item" data-page="home">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" data-page="trip">
+      <span class="nav-icon">🛫</span>
+      <span>My Trip</span>
+    </div>
+    <div class="nav-item" data-page="map">
+      <span class="nav-icon">📍</span>
+      <span>Map</span>
+    </div>
+    <div class="nav-item" data-page="profile">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// PAGE NAVIGATION
+// ============================================
+
+function switchPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active-page');
+  });
+  document.getElementById(`${pageId}Page`).classList.add('active-page');
+  
+  document.querySelectorAll('.nav-item').forEach(nav => {
+    nav.classList.remove('active');
+    if (nav.getAttribute('data-page') === pageId) {
+      nav.classList.add('active');
+    }
+  });
+  
+  const titles = {
+    home: 'Live Flight Status',
+    trip: 'My Journey',
+    map: 'Airport Map',
+    profile: 'My Profile'
+  };
+  document.getElementById('sectionTitle').innerHTML = titles[pageId] + ' <small>▼</small>';
+}
+
+document.querySelectorAll('.nav-item').forEach(nav => {
+  nav.addEventListener('click', () => {
+    switchPage(nav.getAttribute('data-page'));
+  });
+});
+
+// ============================================
+// AIRPORT FEATURES
+// ============================================
+
+let gateChanged = false;
+
+function updateSecurityWait() {
+  const times = [4, 5, 7, 8, 10, 12];
+  const randomTime = times[Math.floor(Math.random() * times.length)];
+  const waitElement = document.getElementById('waitTime');
+  if (waitElement) waitElement.innerText = randomTime;
+}
+
+setTimeout(() => {
+  if (!gateChanged) {
+    gateChanged = true;
+    const newGate = "C7";
+    const gateElement = document.getElementById('gateNumber');
+    const statusElement = document.getElementById('flightStatus');
+    
+    if (gateElement) gateElement.innerHTML = newGate;
+    if (statusElement) {
+      statusElement.innerHTML = "Gate Changed";
+      statusElement.style.background = "#e07c3c";
+    }
+    
+    const alertContainer = document.getElementById('alertContainer');
+    if (alertContainer) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert-banner';
+      alertDiv.innerHTML = `
+        <span>⚠️</span>
+        <span><strong>Gate Change!</strong> Now at Gate ${newGate}. 5 min walk.</span>
+        <button id="closeAlert" style="background:none; border:none; font-size: 16px;">✕</button>
+      `;
+      alertContainer.appendChild(alertDiv);
+      document.getElementById('closeAlert')?.addEventListener('click', () => alertDiv.remove());
+    }
+    
+    const flightCard = document.getElementById('flightCard');
+    if (flightCard) flightCard.style.background = "linear-gradient(135deg, #9e2d2f, #c73e3e)";
+    
+    const msgDiv = document.getElementById('navMessage');
+    if (msgDiv) {
+      msgDiv.innerHTML = "🔄 Gate changed to C7. Follow blue path. 5 minute walk.";
+      msgDiv.style.display = "block";
+    }
+  }
+}, 10000);
+
+document.getElementById('navSecurityBtn')?.addEventListener('click', () => {
+  const waitTime = document.getElementById('waitTime')?.innerText || '8';
+  const msgDiv = document.getElementById('navMessage');
+  if (msgDiv) {
+    msgDiv.innerHTML = `🚶 Navigating to Security. Wait: ${waitTime} min. Turn right after Ministop.`;
+    msgDiv.style.display = "block";
+  }
+});
+
+document.getElementById('exploreBtn')?.addEventListener('click', () => {
+  const msgDiv = document.getElementById('navMessage');
+  if (msgDiv) {
+    msgDiv.innerHTML = "🛍️ Shops near Gate B3: Jollibee, Cebu Lechon, Dried Mangoes!";
+    msgDiv.style.display = "block";
+  }
+});
+
+document.getElementById('searchBtn')?.addEventListener('click', () => {
+  const msgDiv = document.getElementById('navMessage');
+  if (msgDiv) {
+    msgDiv.innerHTML = "🔍 Search flights, shops, or amenities at MCIA.";
+    msgDiv.style.display = "block";
+  }
+});
+
+document.getElementById('rewardsBtn')?.addEventListener('click', () => {
+  switchPage('profile');
+  const msgDiv = document.getElementById('navMessage');
+  if (msgDiv) {
+    msgDiv.innerHTML = "🎖 GetGo Rewards: 5,280 points. Redeem for discounts!";
+    msgDiv.style.display = "block";
+  }
+});
+
+document.querySelectorAll('.layover-item').forEach((item, index) => {
+  item.addEventListener('click', () => {
+    const messages = [
+      "🦋 Butterfly Garden: Beautiful spot near Terminal 2!",
+      "🍗 Jollibee: Chickenjoy ready in 5 minutes!",
+      "🥭 Cebu Gift Shop: Best dried mangoes and otap!"
+    ];
+    const msgDiv = document.getElementById('navMessage');
+    if (msgDiv) {
+      msgDiv.innerHTML = messages[index];
+      msgDiv.style.display = "block";
+    }
+  });
+});
+
+document.querySelectorAll('.trip-item').forEach((item) => {
+  item.addEventListener('click', () => {
+    const msgDiv = document.getElementById('navMessage');
+    if (msgDiv && document.getElementById('tripPage').classList.contains('active-page')) {
+      msgDiv.innerHTML = "📱 Boarding pass would appear here.";
+      msgDiv.style.display = "block";
+    }
+  });
+});
+
+setInterval(updateSecurityWait, 12000);
+updateSecurityWait();
+
+setTimeout(() => {
+  const alertContainer = document.getElementById('alertContainer');
+  if (alertContainer) {
+    const boardingAlert = document.createElement('div');
+    boardingAlert.className = 'alert-banner';
+    boardingAlert.style.background = "#e3f2fd";
+    boardingAlert.style.borderLeftColor = "#2196f3";
+    boardingAlert.innerHTML = `
+      <span>⏰</span>
+      <span><strong>Boarding in 25 min</strong> • Gate ${document.getElementById('gateNumber')?.innerHTML || 'B3'}</span>
+      <button id="closeBoardAlert" style="background:none; border:none;">✕</button>
+    `;
+    alertContainer.appendChild(boardingAlert);
+    document.getElementById('closeBoardAlert')?.addEventListener('click', () => boardingAlert.remove());
+  }
+}, 20000);
+
+window.addEventListener('load', () => {
+  const msgDiv = document.getElementById('navMessage');
+  if (msgDiv) {
+    setTimeout(() => {
+      msgDiv.innerHTML = "✅ Flight 5J584 synced. Welcome to MCIA! 🇵🇭";
+      msgDiv.style.display = "block";
+    }, 1000);
+  }
+});
+</script>
+</body>
+</html>
