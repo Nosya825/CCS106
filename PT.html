@@ -36,7 +36,6 @@
       position: relative;
     }
 
-    /* Status Bar */
     .status-bar {
       background: #2d6a4f;
       color: white;
@@ -47,7 +46,38 @@
       font-weight: 600;
     }
 
-    /* HEADER = AD CAROUSEL ONLY */
+    .search-container {
+      padding: 12px 16px;
+      background: #2d6a4f;
+    }
+
+    .search-bar {
+      background: white;
+      border-radius: 30px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .search-bar span {
+      font-size: 18px;
+      color: #2d6a4f;
+    }
+
+    .search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .search-bar input::placeholder {
+      color: #b0bec5;
+    }
+
     .ads-header {
       background: transparent;
       padding: 0;
@@ -57,8 +87,6 @@
       width: 100%;
       height: 150px;
       overflow: hidden;
-      border-top-left-radius: 32px;
-      border-top-right-radius: 32px;
       position: relative;
     }
 
@@ -115,41 +143,6 @@
       background: white;
     }
 
-    /* Search Bar */
-    .search-container {
-      padding: 12px 28px;
-      background: #1f2a24;
-    }
-
-    .search-bar {
-      background: #2c3630;
-      border-radius: 10px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .search-bar span {
-      font-size: 16px;
-      color: white;
-    }
-
-    .search-bar input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: white;
-      font-size: 14px;
-    }
-
-    .search-bar input::placeholder {
-      color: rgba(255,255,255,0.55);
-    }
-
-    /* Scrollable Content */
     .scroll-content {
       flex: 1;
       overflow-y: auto;
@@ -177,7 +170,6 @@
       color: #1e2a3a;
     }
 
-    /* Flight Type Selector */
     .flight-type {
       display: flex;
       gap: 12px;
@@ -204,7 +196,6 @@
       color: white;
     }
 
-    /* Flight List */
     .flight-list {
       margin: 0 16px 16px 16px;
     }
@@ -297,7 +288,44 @@
       margin-top: 6px;
     }
 
-    /* Scanner Section - NON-INTERACTIVE, just displays your image */
+    .attractions-grid, .shops-grid {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 0 16px 8px 16px;
+    }
+
+    .attraction-card, .shop-card {
+      background: white;
+      border-radius: 20px;
+      padding: 14px;
+      min-width: 140px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid #e1e8ed;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .attraction-card:active, .shop-card:active {
+      transform: scale(0.97);
+    }
+
+    .attraction-emoji, .shop-emoji {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .attraction-card h4, .shop-card h4 {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .attraction-card p, .shop-card p {
+      font-size: 11px;
+      color: #6c7a8e;
+    }
+
     .scanner-section {
       margin: 16px;
       padding: 24px;
@@ -335,44 +363,6 @@
       font-size: 11px;
       margin-top: 12px;
       color: white;
-    }
-
-    .attractions-grid, .shops-grid {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 0 16px 8px 16px;
-    }
-
-    .attraction-card, .shop-card {
-      background: white;
-      border-radius: 20px;
-      padding: 14px;
-      min-width: 140px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      border: 1px solid #e1e8ed;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .attraction-card:active, .shop-card:active {
-      transform: scale(0.97);
-    }
-
-    .attraction-emoji, .shop-emoji {
-      font-size: 48px;
-      margin-bottom: 8px;
-    }
-
-    .attraction-card h4, .shop-card h4 {
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-
-    .attraction-card p, .shop-card p {
-      font-size: 11px;
-      color: #6c7a8e;
     }
 
     .alert-banner {
@@ -572,13 +562,18 @@
 </head>
 <body>
 <div class="app-container">
-  <!-- Status Bar -->
   <div class="status-bar">
     <span>9:41</span>
     <span>📶 🔋 94%</span>
   </div>
 
-  <!-- HEADER = AD CAROUSEL ONLY -->
+  <div class="search-container">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="searchInput" placeholder="Search flights, shops, restaurants...">
+    </div>
+  </div>
+
   <div id="adsHeader" class="ads-header">
     <div class="ads-container">
       <div class="ads-carousel" id="adsCarousel">
@@ -599,15 +594,6 @@
     </div>
   </div>
 
-  <!-- Search Bar -->
-  <div class="search-container">
-    <div class="search-bar">
-      <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="Search flights, shops, restaurants...">
-    </div>
-  </div>
-
-  <!-- Scrollable Content -->
   <div class="scroll-content">
     
     <!-- HOME PAGE -->
@@ -615,55 +601,55 @@
       
       <div class="welcome-banner">
         <h3>Welcome to MCIA! 🌿🇵🇭</h3>
-        <p>Explore shops, dining, and attractions at Mactan-Cebu International Airport</p>
+        <p>Your guide to Mactan-Cebu International Airport</p>
       </div>
 
       <div class="section-title">
-        <span>🏝️ Airport Attractions</span>
+        <span>🏨 Airport Services & Amenities</span>
       </div>
       <div class="attractions-grid">
-        <div class="attraction-card" data-msg="🦋 Butterfly Garden: Beautiful indoor garden with live butterflies. Free entry!">
-          <div class="attraction-emoji">🦋</div>
-          <h4>Butterfly Garden</h4>
-          <p>Terminal 2 • Free</p>
+        <div class="attraction-card" data-msg="🏨 Waterfront Airport Hotel: Located just 2 minutes from the terminal. Perfect for layovers, day rooms, and overnight stays. Book online or at the front desk.">
+          <div class="attraction-emoji">🏨</div>
+          <h4>Waterfront Hotel</h4>
+          <p>Connected to airport</p>
         </div>
-        <div class="attraction-card" data-msg="🌿 Tropical Courtyard: Open-air garden with native Filipino plants.">
-          <div class="attraction-emoji">🌿</div>
-          <h4>Tropical Courtyard</h4>
-          <p>Terminal 1 • Free</p>
+        <div class="attraction-card" data-msg="🚐 Free Shuttle Service: Runs every 15 minutes between Terminal 1 and Terminal 2. Travel time is approximately 5 minutes. Look for the blue shuttle signs.">
+          <div class="attraction-emoji">🚐</div>
+          <h4>Terminal Shuttle</h4>
+          <p>Free • T1 ↔ T2</p>
         </div>
-        <div class="attraction-card" data-msg="🎨 Cebu Art Gallery: Local artwork celebrating Visayan heritage.">
-          <div class="attraction-emoji">🎨</div>
-          <h4>Art Gallery</h4>
-          <p>Terminal 2 • Free</p>
-        </div>
-        <div class="attraction-card" data-msg="⛱️ Viewing Deck: Watch planes take off and land!">
-          <div class="attraction-emoji">⛱️</div>
+        <div class="attraction-card" data-msg="👀 Viewing Deck: Watch planes take off and land from the 3rd floor viewing area. Open 24/7. Great for aviation enthusiasts and families.">
+          <div class="attraction-emoji">👀</div>
           <h4>Viewing Deck</h4>
-          <p>Terminal 1 • Free</p>
+          <p>Terminal 2 • Free</p>
+        </div>
+        <div class="attraction-card" data-msg="💺 PAGSS Lounge: Premium lounge with complimentary food, drinks, Wi-Fi, and showers. Free for GetGo Gold members. Day pass available for ₱1,200.">
+          <div class="attraction-emoji">💺</div>
+          <h4>Airport Lounge</h4>
+          <p>PAGSS • Premium</p>
         </div>
       </div>
 
       <div class="section-title">
-        <span>🍽️ Shops & Dining</span>
+        <span>🛍️ Shops & Dining</span>
       </div>
       <div class="shops-grid">
-        <div class="shop-card" data-msg="🍗 Jollibee: Chickenjoy, Jolly Spaghetti, Peach Mango Pie!">
+        <div class="shop-card" data-msg="🍗 Jollibee: Enjoy Chickenjoy, Jolly Spaghetti, and Peach Mango Pie. Located at Terminal 2 Departure area.">
           <div class="shop-emoji">🍗</div>
           <h4>Jollibee</h4>
           <p>Filipino Fast Food</p>
         </div>
-        <div class="shop-card" data-msg="🥭 Cebu Gift Shop: Dried mangoes, otap, rosquillos!">
+        <div class="shop-card" data-msg="🥭 Cebu Gift Shop: Best place for dried mangoes, otap, rosquillos, and lechon belly! Pasalubong shopping at Terminal 1 & 2.">
           <div class="shop-emoji">🥭</div>
           <h4>Pasalubong Center</h4>
           <p>Souvenirs & Gifts</p>
         </div>
-        <div class="shop-card" data-msg="☕ Bo's Coffee: Premium Philippine coffee, Cebu blend!">
+        <div class="shop-card" data-msg="☕ Bo's Coffee: Premium Philippine coffee. Try their famous Cebu blend! Located at Terminal 2 near Gate B3.">
           <div class="shop-emoji">☕</div>
           <h4>Bo's Coffee</h4>
           <p>Coffee Shop</p>
         </div>
-        <div class="shop-card" data-msg="🛍️ Duty Free: Tax-free perfumes, chocolates, liquor!">
+        <div class="shop-card" data-msg="🛍️ Duty Free Philippines: Tax-free shopping - perfumes, chocolates, liquor, and luxury goods. Show your boarding pass.">
           <div class="shop-emoji">🛍️</div>
           <h4>Duty Free</h4>
           <p>Tax-Free Shopping</p>
@@ -671,25 +657,20 @@
       </div>
 
       <div class="shops-grid" style="margin-top: 4px;">
-        <div class="shop-card" data-msg="🍜 Mang Inasal: Chicken Inasal with unlimited rice!">
+        <div class="shop-card" data-msg="🍜 Mang Inasal: Famous for Chicken Inasal and unlimited rice! A Cebu favorite. Located at Terminal 1 Departure area.">
           <div class="shop-emoji">🍜</div>
           <h4>Mang Inasal</h4>
           <p>Grilled Chicken</p>
         </div>
-        <div class="shop-card" data-msg="🥩 Cebu Lechon: Crispy skin, juicy meat! A must-try.">
+        <div class="shop-card" data-msg="🥩 Cebu Lechon: Authentic Cebu lechon - crispy skin, juicy meat. Available at the Pasalubong Center and select restaurants.">
           <div class="shop-emoji">🥩</div>
           <h4>Cebu Lechon</h4>
           <p>Local Delicacy</p>
         </div>
-        <div class="shop-card" data-msg="🧴 Bench: Filipino clothing, fragrances, accessories!">
+        <div class="shop-card" data-msg="🧴 Bench: Popular Filipino clothing, fragrances, and accessories. Great for last-minute pasalubong!">
           <div class="shop-emoji">🧴</div>
           <h4>Bench</h4>
           <p>Clothing & Gifts</p>
-        </div>
-        <div class="shop-card" data-msg="💺 PAGSS Lounge: Free food, drinks, Wi-Fi for GetGo Gold!">
-          <div class="shop-emoji">💺</div>
-          <h4>Airport Lounge</h4>
-          <p>Premium Relaxation</p>
         </div>
       </div>
 
@@ -697,10 +678,9 @@
       <div id="navMessage"></div>
     </div>
 
-    <!-- MY TRIP PAGE - Live Flight Information -->
+    <!-- MY TRIP PAGE -->
     <div id="tripPage" class="page">
       
-      <!-- Current Flight (User's booked flight) -->
       <div class="flight-card">
         <div class="flight-row">
           <span class="flight-code">5J 584</span>
@@ -714,7 +694,6 @@
         <div style="margin-top: 12px; font-size: 13px; opacity: 0.9;">🎫 Check-in Row 4 | 🧳 Bag Drop A2</div>
       </div>
 
-      <!-- Flight Type Selector (Arrivals / Departures) -->
       <div class="flight-type">
         <div class="type-option active" data-type="departures">🛫 Departures</div>
         <div class="type-option" data-type="arrivals">🛬 Arrivals</div>
@@ -725,10 +704,7 @@
         <span style="font-size: 12px;">Updated real-time</span>
       </div>
 
-      <!-- Flight List Container -->
-      <div class="flight-list" id="flightList">
-        <!-- Flights will be dynamically inserted here -->
-      </div>
+      <div class="flight-list" id="flightList"></div>
     </div>
 
     <!-- MAP PAGE -->
@@ -740,8 +716,11 @@
         <div class="map-grid">
           <div class="map-terminal" style="background: #2d6a4f; color: white;">📍 T2 (You are here)</div>
           <div class="map-terminal">📍 Terminal 1</div>
-          <div class="map-terminal">🍗 Jollibee</div>
+          <div class="map-terminal">🏨 Waterfront Hotel</div>
           <div class="map-terminal">🥭 Pasalubong Center</div>
+        </div>
+        <div style="margin-top: 16px; font-size: 12px; color: #2d6a4f;">
+          🚐 Free Shuttle: T1 ↔ T2 every 15 min
         </div>
       </div>
       <div class="section-title">📍 Nearby Amenities</div>
@@ -750,20 +729,24 @@
         <div class="trip-details"><h4>Restroom</h4><p>2 min walk</p></div>
         <span>→</span>
       </div>
-      <div class="trip-item" data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members.">
+      <div class="trip-item" data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members. Day pass available.">
         <div class="trip-icon">💺</div>
         <div class="trip-details"><h4>PAGSS Lounge</h4><p>3 min walk</p></div>
         <span>→</span>
       </div>
-      <div class="trip-item" data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating.">
+      <div class="trip-item" data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating area.">
         <div class="trip-icon">🔌</div>
         <div class="trip-details"><h4>Charging Stations</h4><p>1 min walk</p></div>
         <span>→</span>
       </div>
+      <div class="trip-item" data-msg="🚐 Free Shuttle to Terminal 1: Board outside arrivals. Departs every 15 minutes.">
+        <div class="trip-icon">🚐</div>
+        <div class="trip-details"><h4>Terminal Shuttle</h4><p>Free • T1 ↔ T2</p></div>
+        <span>→</span>
+      </div>
       
-      <!-- Scanner Section - NON-INTERACTIVE with your image -->
       <div class="scanner-section">
-        <img class="scanner-image" src="https://cdn-icons-png.flaticon.com/512/3082/3082421.png" alt="Scanner Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082421.png'">
+        <img class="scanner-image" src="https://cdn-icons-png.flaticon.com/512/3082/3082421.png" alt="Scanner Icon">
         <h4>📷 Scan & Pay</h4>
         <p>QR code payment coming soon</p>
         <div class="coming-soon">🔜 Coming Soon</div>
@@ -802,7 +785,6 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation (no Scan button anymore - it's inside Map page) -->
   <div class="bottom-nav">
     <div class="nav-item" data-page="home"><span class="nav-icon">🏠</span><span>Home</span></div>
     <div class="nav-item" data-page="trip"><span class="nav-icon">🛫</span><span>My Trip</span></div>
@@ -812,10 +794,6 @@
 </div>
 
 <script>
-  // ============================================
-  // HIDE ADS ON NON-HOME PAGES
-  // ============================================
-  
   const adsHeader = document.getElementById('adsHeader');
   
   function updateAdsVisibility(pageId) {
@@ -826,18 +804,12 @@
     }
   }
 
-  // ============================================
-  // LIVE FLIGHT DATA (Departures & Arrivals)
-  // ============================================
-  
   const departures = [
     { airline: "Cebu Pacific", code: "5J 584", destination: "Manila (MNL)", time: "14:25", status: "On Time", gate: "B3", icon: "✈️" },
     { airline: "Philippine Airlines", code: "PR 2860", destination: "Manila (MNL)", time: "15:10", status: "Boarding", gate: "A5", icon: "🛩️" },
     { airline: "AirAsia", code: "Z2 771", destination: "Clark (CRK)", time: "16:00", status: "On Time", gate: "C2", icon: "🛫" },
     { airline: "Cebu Pacific", code: "5J 586", destination: "Tokyo (NRT)", time: "17:30", status: "Delayed", gate: "B4", icon: "✈️" },
-    { airline: "Singapore Airlines", code: "SQ 921", destination: "Singapore (SIN)", time: "18:45", status: "On Time", gate: "D1", icon: "🌟" },
-    { airline: "Korean Air", code: "KE 578", destination: "Seoul (ICN)", time: "20:15", status: "On Time", gate: "D3", icon: "🛩️" },
-    { airline: "Cathay Pacific", code: "CX 902", destination: "Hong Kong (HKG)", time: "21:30", status: "On Time", gate: "A8", icon: "✈️" }
+    { airline: "Singapore Airlines", code: "SQ 921", destination: "Singapore (SIN)", time: "18:45", status: "On Time", gate: "D1", icon: "🌟" }
   ];
 
   const arrivals = [
@@ -845,9 +817,7 @@
     { airline: "Philippine Airlines", code: "PR 2859", from: "Manila (MNL)", time: "14:30", status: "On Time", gate: "A5", icon: "🛩️" },
     { airline: "AirAsia", code: "Z2 770", from: "Clark (CRK)", time: "15:20", status: "On Time", gate: "C2", icon: "🛫" },
     { airline: "Cebu Pacific", code: "5J 585", from: "Tokyo (NRT)", time: "16:45", status: "Delayed", gate: "B4", icon: "✈️" },
-    { airline: "Singapore Airlines", code: "SQ 920", from: "Singapore (SIN)", time: "18:00", status: "On Time", gate: "D1", icon: "🌟" },
-    { airline: "Korean Air", code: "KE 577", from: "Seoul (ICN)", time: "19:30", status: "On Time", gate: "D3", icon: "🛩️" },
-    { airline: "Cathay Pacific", code: "CX 901", from: "Hong Kong (HKG)", time: "20:45", status: "Arrived", gate: "A8", icon: "✈️" }
+    { airline: "Singapore Airlines", code: "SQ 920", from: "Singapore (SIN)", time: "18:00", status: "On Time", gate: "D1", icon: "🌟" }
   ];
 
   let currentFlightType = "departures";
@@ -897,7 +867,6 @@
     });
   }
 
-  // Flight type selector
   document.querySelectorAll('.type-option').forEach(option => {
     option.addEventListener('click', () => {
       document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
@@ -907,10 +876,8 @@
     });
   });
 
-  // Initial render
   renderFlights();
 
-  // ADS CAROUSEL
   const carousel = document.getElementById('adsCarousel');
   const dotsContainer = document.getElementById('adDots');
   let adCards = [];
@@ -965,7 +932,6 @@
     });
   }
 
-  // SEARCH
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -979,7 +945,6 @@
     }
   });
 
-  // PAGE NAVIGATION
   function switchPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
     document.getElementById(`${pageId}Page`).classList.add('active-page');
@@ -987,8 +952,6 @@
       nav.classList.remove('active');
       if (nav.getAttribute('data-page') === pageId) nav.classList.add('active');
     });
-    
-    // Update ads visibility
     updateAdsVisibility(pageId);
   }
   
@@ -998,7 +961,6 @@
     });
   });
 
-  // CLICK HANDLERS
   document.querySelectorAll('.attraction-card, .shop-card').forEach(item => {
     item.addEventListener('click', () => {
       const msg = item.getAttribute('data-msg') || "📍 More info would appear here.";
@@ -1010,6 +972,7 @@
       }
     });
   });
+  
   document.querySelectorAll('.trip-item').forEach(item => {
     item.addEventListener('click', () => {
       const msg = item.getAttribute('data-msg') || "📱 More details would appear here.";
@@ -1022,7 +985,6 @@
     });
   });
 
-  // GATE CHANGE ALERT
   let gateChanged = false;
   setTimeout(() => {
     if (!gateChanged) {
@@ -1052,7 +1014,7 @@
     const msgDiv = document.getElementById('navMessage');
     if (msgDiv) {
       setTimeout(() => {
-        msgDiv.innerHTML = "✨ Welcome to MCIA Flow! Explore shops, dining, and attractions at Mactan-Cebu Airport. ✨";
+        msgDiv.innerHTML = "✨ Welcome to MCIA Flow! Your smart airport companion for Mactan-Cebu. ✨";
         msgDiv.style.display = "block";
         setTimeout(() => { msgDiv.style.display = "none"; }, 6000);
       }, 1000);
