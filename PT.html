@@ -1,1454 +1,1063 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#2d6a4f" />
-    <title>MCIA Flow - Mactan Cebu Airport App</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-          sans-serif;
-      }
-
-      body {
-        background: #1a1a2e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 16px;
-      }
-
-      .app-container {
-        max-width: 400px;
-        width: 100%;
-        background: linear-gradient(180deg, #2d6a4f 0%, #f5f7fb 20%);
-        border-radius: 48px;
-        box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
-        height: 780px;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-      }
-
-      /* Status Bar */
-      .status-bar {
-        background: #2d6a4f;
-        color: white;
-        padding: 14px 20px 10px 20px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      /* HEADER = AD CAROUSEL ONLY */
-      .ads-header {
-        background: transparent;
-        padding: 0;
-      }
-
-      .ads-container {
-        width: 100%;
-        height: 150px;
-        overflow: hidden;
-        border-top-left-radius: 32px;
-        border-top-right-radius: 32px;
-        position: relative;
-      }
-
-      .ads-carousel {
-        display: flex;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-      }
-
-      .ads-carousel::-webkit-scrollbar {
-        display: none;
-      }
-
-      .ad-card {
-        min-width: 100%;
-        height: 150px;
-        border-radius: 0;
-        box-shadow: none;
-      }
-
-      .ad-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center center;
-        display: block;
-        filter: brightness(70%);
-      }
-
-      .ad-text {
-        display: none;
-      }
-
-      .ad-dots {
-        position: absolute;
-        bottom: 12px;
-        right: 16px;
-        display: flex;
-        gap: 6px;
-        z-index: 10;
-      }
-
-      .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.6);
-        backdrop-filter: blur(4px);
-      }
-
-      .dot.active {
-        width: 18px;
-        border-radius: 6px;
-        background: white;
-      }
-
-      /* Search Bar */
-      .search-container {
-        padding: 12px 28px;
-        background: #1f2a24;
-      }
-
-      .search-bar {
-        background: #2c3630;
-        border-radius: 10px;
-        padding: 8px 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .search-bar span {
-        font-size: 16px;
-        color: white;
-      }
-
-      .search-bar input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: white;
-        font-size: 14px;
-      }
-
-      .search-bar input::placeholder {
-        color: rgba(255, 255, 255, 0.55);
-      }
-
-      /* Scrollable Content */
-      .scroll-content {
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 20px;
-        background: #f5f7fb;
-        border-radius: 30px 30px 0 0;
-        margin-top: 8px;
-      }
-
-      .welcome-banner {
-        background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
-        margin: 16px 16px 8px 16px;
-        padding: 16px 20px;
-        border-radius: 24px;
-        color: white;
-      }
-
-      .section-title {
-        font-weight: 700;
-        font-size: 18px;
-        margin: 20px 16px 12px 16px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #1e2a3a;
-      }
-
-      /* Trip Type Selector */
-      .trip-type {
-        display: flex;
-        gap: 12px;
-        margin: 0 16px 16px 16px;
-        background: white;
-        padding: 8px;
-        border-radius: 30px;
-        border: 1px solid #e1e8ed;
-      }
-
-      .trip-option {
-        flex: 1;
-        text-align: center;
-        padding: 10px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 14px;
-        transition: all 0.2s;
-      }
-
-      .trip-option.active {
-        background: linear-gradient(135deg, #2d6a4f, #1b4d2e);
-        color: white;
-      }
-
-      /* Flight Browser */
-      .flight-browser {
-        margin: 0 16px 16px 16px;
-      }
-
-      .flight-card-browser {
-        background: white;
-        border-radius: 20px;
-        padding: 16px;
-        margin-bottom: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e1e8ed;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-
-      .flight-card-browser:active {
-        transform: scale(0.98);
-      }
-
-      .flight-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-      }
-
-      .airline {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .airline-icon {
-        font-size: 24px;
-      }
-
-      .airline-name {
-        font-weight: 700;
-        font-size: 16px;
-      }
-
-      .price {
-        font-weight: 800;
-        font-size: 18px;
-        color: #2d6a4f;
-      }
-
-      .flight-route {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-      }
-
-      .departure,
-      .arrival {
-        text-align: center;
-      }
-
-      .time {
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .code {
-        font-size: 12px;
-        color: #6c7a8e;
-      }
-
-      .flight-line {
-        flex: 1;
-        height: 2px;
-        background: #e1e8ed;
-        margin: 0 12px;
-        position: relative;
-      }
-
-      .flight-line::before {
-        content: "✈️";
-        position: absolute;
-        left: 50%;
-        top: -8px;
-        transform: translateX(-50%);
-        font-size: 12px;
-        color: #2d6a4f;
-      }
-
-      .flight-duration {
-        font-size: 11px;
-        color: #6c7a8e;
-        text-align: center;
-        margin-top: 8px;
-      }
-
-      /* Multi-city specific */
-      .multi-city-flight {
-        border-left: 3px solid #f5a623;
-      }
-
-      .stop-info {
-        font-size: 11px;
-        color: #f5a623;
-        margin-top: 8px;
-        text-align: center;
-      }
-
-      .booking-btn {
-        background: linear-gradient(135deg, #f5a623, #ff6b6b);
-        margin: 8px 16px 16px 16px;
-        padding: 16px;
-        border-radius: 28px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-
-      .booking-btn:active {
-        transform: scale(0.98);
-      }
-
-      .booking-btn-left h4 {
-        font-size: 18px;
-        font-weight: 700;
-        color: white;
-      }
-
-      .booking-btn-left p {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        margin-top: 4px;
-      }
-
-      .booking-btn-right {
-        font-size: 32px;
-        color: white;
-      }
-
-      .attractions-grid,
-      .shops-grid {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding: 0 16px 8px 16px;
-      }
-
-      .attraction-card,
-      .shop-card {
-        background: white;
-        border-radius: 20px;
-        padding: 14px;
-        min-width: 140px;
-        text-align: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e1e8ed;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-
-      .attraction-card:active,
-      .shop-card:active {
-        transform: scale(0.97);
-      }
-
-      .attraction-emoji,
-      .shop-emoji {
-        font-size: 48px;
-        margin-bottom: 8px;
-      }
-
-      .attraction-card h4,
-      .shop-card h4 {
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-
-      .attraction-card p,
-      .shop-card p {
-        font-size: 11px;
-        color: #6c7a8e;
-      }
-
-      .alert-banner {
-        background: #fff3e0;
-        margin: 12px 16px;
-        padding: 14px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-left: 4px solid #ff9800;
-      }
-
-      .page {
-        display: none;
-      }
-
-      .page.active-page {
-        display: block;
-      }
-
-      .flight-card {
-        background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
-        margin: 16px 16px;
-        padding: 20px;
-        border-radius: 28px;
-        color: white;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-      }
-
-      .flight-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-      }
-
-      .flight-code {
-        font-size: 26px;
-        font-weight: 800;
-        letter-spacing: 1px;
-      }
-
-      .status-badge {
-        background: #ffb347;
-        padding: 4px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #1e2a3a;
-      }
-
-      .destination {
-        font-size: 15px;
-        margin: 8px 0;
-      }
-
-      .gate-time-info {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 16px;
-        padding-top: 12px;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .trip-item {
-        background: white;
-        margin: 8px 16px;
-        padding: 16px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .trip-item:active {
-        background: #e8f0fe;
-      }
-
-      .trip-icon {
-        font-size: 32px;
-      }
-
-      .trip-details {
-        flex: 1;
-      }
-
-      .trip-details h4 {
-        font-size: 16px;
-        margin-bottom: 4px;
-      }
-
-      .trip-details p {
-        font-size: 13px;
-        color: #6c7a8e;
-      }
-
-      .map-container {
-        background: #e8f0fe;
-        margin: 16px;
-        border-radius: 24px;
-        padding: 20px;
-        text-align: center;
-      }
-
-      .map-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-top: 16px;
-      }
-
-      .map-terminal {
-        background: white;
-        padding: 12px;
-        border-radius: 16px;
-        font-weight: 600;
-      }
-
-      .profile-header {
-        background: white;
-        margin: 16px;
-        padding: 24px;
-        border-radius: 28px;
-        text-align: center;
-      }
-
-      .avatar {
-        font-size: 64px;
-        margin-bottom: 12px;
-      }
-
-      .points-card {
-        background: linear-gradient(135deg, #f5a623, #ff6b6b);
-        margin: 16px;
-        padding: 20px;
-        border-radius: 24px;
-        color: white;
-        text-align: center;
-      }
-
-      .points-number {
-        font-size: 36px;
-        font-weight: 800;
-      }
-
-      .bottom-nav {
-        background: white;
-        display: flex;
-        justify-content: space-around;
-        padding: 12px 16px 20px;
-        border-top: 1px solid #e1e8ed;
-      }
-
-      .nav-item {
-        text-align: center;
-        font-size: 12px;
-        color: #8e9aaf;
-        transition: all 0.2s;
-        cursor: pointer;
-        flex: 1;
-      }
-
-      .nav-item.active {
-        color: #2d6a4f;
-        font-weight: 600;
-      }
-
-      .nav-icon {
-        font-size: 24px;
-        display: block;
-        margin-bottom: 4px;
-      }
-
-      button {
-        cursor: pointer;
-        transition: transform 0.1s;
-      }
-
-      button:active {
-        transform: scale(0.97);
-      }
-
-      #navMessage {
-        margin: 16px;
-        background: #e8f0fe;
-        padding: 12px;
-        border-radius: 16px;
-        font-size: 13px;
-        text-align: center;
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="app-container">
-      <!-- Status Bar -->
-      <div class="status-bar">
-        <span>9:41</span>
-        <span>📶 🔋 94%</span>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2d6a4f">
+  <title>MCIA Flow - Mactan Cebu Airport App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .app-container {
+      max-width: 400px;
+      width: 100%;
+      background: linear-gradient(180deg, #2d6a4f 0%, #f5f7fb 20%);
+      border-radius: 48px;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+      overflow: hidden;
+      height: 780px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: #2d6a4f;
+      color: white;
+      padding: 14px 20px 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* HEADER = AD CAROUSEL ONLY */
+    .ads-header {
+      background: transparent;
+      padding: 0;
+    }
+
+    .ads-container {
+      width: 100%;
+      height: 150px;
+      overflow: hidden;
+      border-top-left-radius: 32px;
+      border-top-right-radius: 32px;
+      position: relative;
+    }
+
+    .ads-carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+
+    .ads-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ad-card {
+      min-width: 100%;
+      height: 150px;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .ad-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+      filter: brightness(70%);
+    }
+
+    .ad-text {
+      display: none;
+    }
+
+    .ad-dots {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    .dot.active {
+      width: 18px;
+      border-radius: 6px;
+      background: white;
+    }
+
+    /* Search Bar */
+    .search-container {
+      padding: 12px 28px;
+      background: #1f2a24;
+    }
+
+    .search-bar {
+      background: #2c3630;
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .search-bar span {
+      font-size: 16px;
+      color: white;
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 14px;
+    }
+
+    .search-bar input::placeholder {
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* Scrollable Content */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 20px;
+      background: #f5f7fb;
+      border-radius: 30px 30px 0 0;
+      margin-top: 8px;
+    }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
+      margin: 16px 16px 8px 16px;
+      padding: 16px 20px;
+      border-radius: 24px;
+      color: white;
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin: 20px 16px 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1e2a3a;
+    }
+
+    /* Flight Type Selector */
+    .flight-type {
+      display: flex;
+      gap: 12px;
+      margin: 0 16px 16px 16px;
+      background: white;
+      padding: 8px;
+      border-radius: 30px;
+      border: 1px solid #e1e8ed;
+    }
+
+    .type-option {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .type-option.active {
+      background: linear-gradient(135deg, #2d6a4f, #1b4d2e);
+      color: white;
+    }
+
+    /* Flight List */
+    .flight-list {
+      margin: 0 16px 16px 16px;
+    }
+
+    .flight-item {
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid #e1e8ed;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .flight-info {
+      flex: 1;
+    }
+
+    .flight-airline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .airline-icon {
+      font-size: 20px;
+    }
+
+    .airline-name {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .flight-code {
+      font-size: 12px;
+      color: #6c7a8e;
+      margin-left: 8px;
+    }
+
+    .flight-route {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .flight-time {
+      font-size: 13px;
+      color: #2d6a4f;
+      font-weight: 500;
+    }
+
+    .flight-status {
+      text-align: right;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status.on-time {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status.delayed {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .status.boarding {
+      background: #fff3e0;
+      color: #f5a623;
+    }
+
+    .status.arrived {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .gate {
+      font-size: 11px;
+      color: #6c7a8e;
+      margin-top: 6px;
+    }
+
+    /* Scanner Section - NON-INTERACTIVE, just displays your image */
+    .scanner-section {
+      margin: 16px;
+      padding: 24px;
+      background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .scanner-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 16px;
+    }
+
+    .scanner-section h4 {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .scanner-section p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .coming-soon {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      margin-top: 12px;
+      color: white;
+    }
+
+    .attractions-grid, .shops-grid {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 0 16px 8px 16px;
+    }
+
+    .attraction-card, .shop-card {
+      background: white;
+      border-radius: 20px;
+      padding: 14px;
+      min-width: 140px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid #e1e8ed;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .attraction-card:active, .shop-card:active {
+      transform: scale(0.97);
+    }
+
+    .attraction-emoji, .shop-emoji {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .attraction-card h4, .shop-card h4 {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .attraction-card p, .shop-card p {
+      font-size: 11px;
+      color: #6c7a8e;
+    }
+
+    .alert-banner {
+      background: #fff3e0;
+      margin: 12px 16px;
+      padding: 14px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 4px solid #ff9800;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    .flight-card {
+      background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
+      margin: 16px 16px;
+      padding: 20px;
+      border-radius: 28px;
+      color: white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .flight-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .flight-code {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .status-badge {
+      background: #ffb347;
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e2a3a;
+    }
+
+    .destination {
+      font-size: 15px;
+      margin: 8px 0;
+    }
+
+    .gate-time-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .trip-item {
+      background: white;
+      margin: 8px 16px;
+      padding: 16px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .trip-item:active {
+      background: #e8f0fe;
+    }
+
+    .trip-icon {
+      font-size: 32px;
+    }
+
+    .trip-details {
+      flex: 1;
+    }
+
+    .trip-details h4 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .trip-details p {
+      font-size: 13px;
+      color: #6c7a8e;
+    }
+
+    .map-container {
+      background: #e8f0fe;
+      margin: 16px;
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .map-terminal {
+      background: white;
+      padding: 12px;
+      border-radius: 16px;
+      font-weight: 600;
+    }
+
+    .profile-header {
+      background: white;
+      margin: 16px;
+      padding: 24px;
+      border-radius: 28px;
+      text-align: center;
+    }
+
+    .avatar {
+      font-size: 64px;
+      margin-bottom: 12px;
+    }
+
+    .points-card {
+      background: linear-gradient(135deg, #f5a623, #ff6b6b);
+      margin: 16px;
+      padding: 20px;
+      border-radius: 24px;
+      color: white;
+      text-align: center;
+    }
+
+    .points-number {
+      font-size: 36px;
+      font-weight: 800;
+    }
+
+    .bottom-nav {
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 16px 20px;
+      border-top: 1px solid #e1e8ed;
+    }
+
+    .nav-item {
+      text-align: center;
+      font-size: 12px;
+      color: #8e9aaf;
+      transition: all 0.2s;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .nav-item.active {
+      color: #2d6a4f;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    button {
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #navMessage {
+      margin: 16px;
+      background: #e8f0fe;
+      padding: 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>📶 🔋 94%</span>
+  </div>
+
+  <!-- HEADER = AD CAROUSEL ONLY -->
+  <div id="adsHeader" class="ads-header">
+    <div class="ads-container">
+      <div class="ads-carousel" id="adsCarousel">
+        <a href="https://www.cebupacificair.com" target="_blank" class="ad-card" rel="noopener noreferrer">
+          <img class="ad-image" src="https://airinsight.com/wp-content/uploads/2021/11/A321neo-ACF-PW-Cebu-Pacific-scaled.jpg" alt="Cebu Pacific">
+        </a>
+        <a href="https://www.jollibee.com.ph/" target="_blank" class="ad-card" rel="noopener noreferrer">
+          <img class="ad-image" src="https://tb-static.uber.com/prod/image-proc/processed_images/8f42f63e1c758c8f3536eb459b5277bc/5283d81c664b43c5f57a3a186d273063.jpeg" alt="Jollibee">
+        </a>
+        <a href="https://www.pinoys.eu/p/dried-yellow-mangoes-100-g-profood-cebu" target="_blank" class="ad-card" rel="noopener noreferrer">
+          <img class="ad-image" src="https://delicacies.ph/wp-content/uploads/2023/01/Dried-Mango.webp" alt="Dried Mangoes">
+        </a>
+        <a href="https://www.pagss.com.ph/" target="_blank" class="ad-card" rel="noopener noreferrer">
+          <img class="ad-image" src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=600&h=240&fit=crop" alt="Lounge">
+        </a>
+      </div>
+      <div class="ad-dots" id="adDots"></div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="searchInput" placeholder="Search flights, shops, restaurants...">
+    </div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="scroll-content">
+    
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active-page">
+      
+      <div class="welcome-banner">
+        <h3>Welcome to MCIA! 🌿🇵🇭</h3>
+        <p>Explore shops, dining, and attractions at Mactan-Cebu International Airport</p>
       </div>
 
-      <!-- HEADER = AD CAROUSEL ONLY -->
-      <div class="ads-header">
-        <div class="ads-container">
-          <div class="ads-carousel" id="adsCarousel">
-            <a
-              href="https://www.cebupacificair.com"
-              target="_blank"
-              class="ad-card"
-              rel="noopener noreferrer"
-            >
-              <img
-                class="ad-image"
-                src="https://airinsight.com/wp-content/uploads/2021/11/A321neo-ACF-PW-Cebu-Pacific-scaled.jpg"
-                alt="Cebu Pacific"
-              />
-            </a>
-            <a
-              href="https://www.jollibee.com.ph/"
-              target="_blank"
-              class="ad-card"
-              rel="noopener noreferrer"
-            >
-              <img
-                class="ad-image"
-                src="https://tb-static.uber.com/prod/image-proc/processed_images/8f42f63e1c758c8f3536eb459b5277bc/5283d81c664b43c5f57a3a186d273063.jpeg"
-                alt="Jollibee"
-              />
-            </a>
-            <a
-              href="https://www.pinoys.eu/p/dried-yellow-mangoes-100-g-profood-cebu"
-              target="_blank"
-              class="ad-card"
-              rel="noopener noreferrer"
-            >
-              <img
-                class="ad-image"
-                src="https://delicacies.ph/wp-content/uploads/2023/01/Dried-Mango.webp"
-                alt="Dried Mangoes"
-              />
-            </a>
-            <a
-              href="https://www.pagss.com.ph/"
-              target="_blank"
-              class="ad-card"
-              rel="noopener noreferrer"
-            >
-              <img
-                class="ad-image"
-                src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=600&h=240&fit=crop"
-                alt="Lounge"
-              />
-            </a>
-          </div>
-          <div class="ad-dots" id="adDots"></div>
+      <div class="section-title">
+        <span>🏝️ Airport Attractions</span>
+      </div>
+      <div class="attractions-grid">
+        <div class="attraction-card" data-msg="🦋 Butterfly Garden: Beautiful indoor garden with live butterflies. Free entry!">
+          <div class="attraction-emoji">🦋</div>
+          <h4>Butterfly Garden</h4>
+          <p>Terminal 2 • Free</p>
+        </div>
+        <div class="attraction-card" data-msg="🌿 Tropical Courtyard: Open-air garden with native Filipino plants.">
+          <div class="attraction-emoji">🌿</div>
+          <h4>Tropical Courtyard</h4>
+          <p>Terminal 1 • Free</p>
+        </div>
+        <div class="attraction-card" data-msg="🎨 Cebu Art Gallery: Local artwork celebrating Visayan heritage.">
+          <div class="attraction-emoji">🎨</div>
+          <h4>Art Gallery</h4>
+          <p>Terminal 2 • Free</p>
+        </div>
+        <div class="attraction-card" data-msg="⛱️ Viewing Deck: Watch planes take off and land!">
+          <div class="attraction-emoji">⛱️</div>
+          <h4>Viewing Deck</h4>
+          <p>Terminal 1 • Free</p>
         </div>
       </div>
 
-      <!-- Search Bar -->
-      <div class="search-container">
-        <div class="search-bar">
-          <span>🔍</span>
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search flights, shops, restaurants..."
-          />
+      <div class="section-title">
+        <span>🍽️ Shops & Dining</span>
+      </div>
+      <div class="shops-grid">
+        <div class="shop-card" data-msg="🍗 Jollibee: Chickenjoy, Jolly Spaghetti, Peach Mango Pie!">
+          <div class="shop-emoji">🍗</div>
+          <h4>Jollibee</h4>
+          <p>Filipino Fast Food</p>
+        </div>
+        <div class="shop-card" data-msg="🥭 Cebu Gift Shop: Dried mangoes, otap, rosquillos!">
+          <div class="shop-emoji">🥭</div>
+          <h4>Pasalubong Center</h4>
+          <p>Souvenirs & Gifts</p>
+        </div>
+        <div class="shop-card" data-msg="☕ Bo's Coffee: Premium Philippine coffee, Cebu blend!">
+          <div class="shop-emoji">☕</div>
+          <h4>Bo's Coffee</h4>
+          <p>Coffee Shop</p>
+        </div>
+        <div class="shop-card" data-msg="🛍️ Duty Free: Tax-free perfumes, chocolates, liquor!">
+          <div class="shop-emoji">🛍️</div>
+          <h4>Duty Free</h4>
+          <p>Tax-Free Shopping</p>
         </div>
       </div>
 
-      <!-- Scrollable Content -->
-      <div class="scroll-content">
-        <!-- HOME PAGE -->
-        <div id="homePage" class="page active-page">
-          <div class="welcome-banner">
-            <h3>Welcome to MCIA! 🌿🇵🇭</h3>
-            <p>
-              Explore shops, dining, and attractions at Mactan-Cebu
-              International Airport
-            </p>
-          </div>
-
-          <div class="section-title">
-            <span>🏝️ Airport Attractions</span>
-          </div>
-          <div class="attractions-grid">
-            <div
-              class="attraction-card"
-              data-msg="🦋 Butterfly Garden: Beautiful indoor garden with live butterflies. Free entry!"
-            >
-              <div class="attraction-emoji">🦋</div>
-              <h4>Butterfly Garden</h4>
-              <p>Terminal 2 • Free</p>
-            </div>
-            <div
-              class="attraction-card"
-              data-msg="🌿 Tropical Courtyard: Open-air garden with native Filipino plants."
-            >
-              <div class="attraction-emoji">🌿</div>
-              <h4>Tropical Courtyard</h4>
-              <p>Terminal 1 • Free</p>
-            </div>
-            <div
-              class="attraction-card"
-              data-msg="🎨 Cebu Art Gallery: Local artwork celebrating Visayan heritage."
-            >
-              <div class="attraction-emoji">🎨</div>
-              <h4>Art Gallery</h4>
-              <p>Terminal 2 • Free</p>
-            </div>
-            <div
-              class="attraction-card"
-              data-msg="⛱️ Viewing Deck: Watch planes take off and land!"
-            >
-              <div class="attraction-emoji">⛱️</div>
-              <h4>Viewing Deck</h4>
-              <p>Terminal 1 • Free</p>
-            </div>
-          </div>
-
-          <div class="section-title">
-            <span>🍽️ Shops & Dining</span>
-          </div>
-          <div class="shops-grid">
-            <div
-              class="shop-card"
-              data-msg="🍗 Jollibee: Chickenjoy, Jolly Spaghetti, Peach Mango Pie!"
-            >
-              <div class="shop-emoji">🍗</div>
-              <h4>Jollibee</h4>
-              <p>Filipino Fast Food</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="🥭 Cebu Gift Shop: Dried mangoes, otap, rosquillos!"
-            >
-              <div class="shop-emoji">🥭</div>
-              <h4>Pasalubong Center</h4>
-              <p>Souvenirs & Gifts</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="☕ Bo's Coffee: Premium Philippine coffee, Cebu blend!"
-            >
-              <div class="shop-emoji">☕</div>
-              <h4>Bo's Coffee</h4>
-              <p>Coffee Shop</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="🛍️ Duty Free: Tax-free perfumes, chocolates, liquor!"
-            >
-              <div class="shop-emoji">🛍️</div>
-              <h4>Duty Free</h4>
-              <p>Tax-Free Shopping</p>
-            </div>
-          </div>
-
-          <div class="shops-grid" style="margin-top: 4px">
-            <div
-              class="shop-card"
-              data-msg="🍜 Mang Inasal: Chicken Inasal with unlimited rice!"
-            >
-              <div class="shop-emoji">🍜</div>
-              <h4>Mang Inasal</h4>
-              <p>Grilled Chicken</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="🥩 Cebu Lechon: Crispy skin, juicy meat! A must-try."
-            >
-              <div class="shop-emoji">🥩</div>
-              <h4>Cebu Lechon</h4>
-              <p>Local Delicacy</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="🧴 Bench: Filipino clothing, fragrances, accessories!"
-            >
-              <div class="shop-emoji">🧴</div>
-              <h4>Bench</h4>
-              <p>Clothing & Gifts</p>
-            </div>
-            <div
-              class="shop-card"
-              data-msg="💺 PAGSS Lounge: Free food, drinks, Wi-Fi for GetGo Gold!"
-            >
-              <div class="shop-emoji">💺</div>
-              <h4>Airport Lounge</h4>
-              <p>Premium Relaxation</p>
-            </div>
-          </div>
-
-          <div id="alertContainer"></div>
-          <div id="navMessage"></div>
+      <div class="shops-grid" style="margin-top: 4px;">
+        <div class="shop-card" data-msg="🍜 Mang Inasal: Chicken Inasal with unlimited rice!">
+          <div class="shop-emoji">🍜</div>
+          <h4>Mang Inasal</h4>
+          <p>Grilled Chicken</p>
         </div>
-
-        <!-- MY TRIP PAGE - Now with Flight Browser -->
-        <div id="tripPage" class="page">
-          <!-- Trip Type Selector -->
-          <div class="trip-type">
-            <div class="trip-option active" data-trip="roundtrip">
-              🔄 Round Trip
-            </div>
-            <div class="trip-option" data-trip="oneway">➡️ One Way</div>
-            <div class="trip-option" data-trip="multicity">🌍 Multi-City</div>
-          </div>
-
-          <!-- Flight Browser - Scrollable list of flights -->
-          <div class="section-title">
-            <span>✈️ Available Flights</span>
-            <span style="font-size: 12px">Tap to select</span>
-          </div>
-          <div class="flight-browser" id="flightBrowser">
-            <!-- Flights will be dynamically inserted here -->
-          </div>
-
-          <!-- Confirm Booking Button -->
-          <div class="booking-btn" id="confirmBookingBtn">
-            <div class="booking-btn-left">
-              <h4>✅ Confirm Selected Flight</h4>
-              <p id="selectedFlightText">No flight selected</p>
-            </div>
-            <div class="booking-btn-right">→</div>
-          </div>
-
-          <!-- Current Booking Display -->
-          <div
-            class="flight-card"
-            id="currentBookingCard"
-            style="display: none"
-          >
-            <div class="flight-row">
-              <span class="flight-code" id="bookedFlightCode">5J 584</span>
-              <span class="status-badge">Booked</span>
-            </div>
-            <div class="destination" id="bookedFlightRoute">✈️ CEB → MNL</div>
-            <div class="gate-time-info">
-              <span id="bookedFlightTime">🕒 14:25</span>
-              <span id="bookedFlightGate">🚪 Gate B3</span>
-            </div>
-          </div>
+        <div class="shop-card" data-msg="🥩 Cebu Lechon: Crispy skin, juicy meat! A must-try.">
+          <div class="shop-emoji">🥩</div>
+          <h4>Cebu Lechon</h4>
+          <p>Local Delicacy</p>
         </div>
-
-        <!-- MAP PAGE -->
-        <div id="mapPage" class="page">
-          <div class="map-container">
-            <div style="font-size: 48px; margin-bottom: 12px">🗺️</div>
-            <h3>Mactan-Cebu International Airport</h3>
-            <p style="color: #6c7a8e; margin-top: 8px">
-              Terminal 2 • Near Gate B3
-            </p>
-            <div class="map-grid">
-              <div
-                class="map-terminal"
-                style="background: #2d6a4f; color: white"
-              >
-                📍 T2 (You are here)
-              </div>
-              <div class="map-terminal">📍 Terminal 1</div>
-              <div class="map-terminal">🍗 Jollibee</div>
-              <div class="map-terminal">🥭 Pasalubong Center</div>
-            </div>
-          </div>
-          <div class="section-title">📍 Nearby Amenities</div>
-          <div
-            class="trip-item"
-            data-msg="🚻 Restroom: 2 minute walk. Turn left after Gate B3."
-          >
-            <div class="trip-icon">🚻</div>
-            <div class="trip-details">
-              <h4>Restroom</h4>
-              <p>2 min walk</p>
-            </div>
-            <span>→</span>
-          </div>
-          <div
-            class="trip-item"
-            data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members."
-          >
-            <div class="trip-icon">💺</div>
-            <div class="trip-details">
-              <h4>PAGSS Lounge</h4>
-              <p>3 min walk</p>
-            </div>
-            <span>→</span>
-          </div>
-          <div
-            class="trip-item"
-            data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating."
-          >
-            <div class="trip-icon">🔌</div>
-            <div class="trip-details">
-              <h4>Charging Stations</h4>
-              <p>1 min walk</p>
-            </div>
-            <span>→</span>
-          </div>
+        <div class="shop-card" data-msg="🧴 Bench: Filipino clothing, fragrances, accessories!">
+          <div class="shop-emoji">🧴</div>
+          <h4>Bench</h4>
+          <p>Clothing & Gifts</p>
         </div>
-
-        <!-- PROFILE PAGE -->
-        <div id="profilePage" class="page">
-          <div class="profile-header">
-            <div class="avatar">👤</div>
-            <h3>Juan Dela Cruz</h3>
-            <p style="color: #6c7a8e">juan@email.com</p>
-            <p style="color: #2d6a4f; margin-top: 8px">
-              ✈️ Cebu Pacific • GetGo Gold Member
-            </p>
-          </div>
-          <div class="points-card">
-            <div>🌟 GetGo Loyalty Points</div>
-            <div class="points-number">5,280</div>
-            <div style="font-size: 12px; margin-top: 8px">
-              Next tier: 7,500 points
-            </div>
-          </div>
-          <div class="section-title">⚙️ Preferences</div>
-          <div
-            class="trip-item"
-            data-msg="🔔 Push notifications enabled for gate changes & boarding"
-          >
-            <div class="trip-icon">🔔</div>
-            <div class="trip-details">
-              <h4>Push Notifications</h4>
-              <p>Enabled for gate changes & boarding</p>
-            </div>
-            <span>✓</span>
-          </div>
-          <div
-            class="trip-item"
-            data-msg="🌍 Language set to English / Filipino"
-          >
-            <div class="trip-icon">🌍</div>
-            <div class="trip-details">
-              <h4>Language</h4>
-              <p>English / Filipino</p>
-            </div>
-            <span>→</span>
-          </div>
-          <div
-            class="trip-item"
-            data-msg="🎫 Saved passengers: Juan Dela Cruz, Maria Santos"
-          >
-            <div class="trip-icon">🎫</div>
-            <div class="trip-details">
-              <h4>Saved Passengers</h4>
-              <p>Juan Dela Cruz, Maria Santos</p>
-            </div>
-            <span>→</span>
-          </div>
+        <div class="shop-card" data-msg="💺 PAGSS Lounge: Free food, drinks, Wi-Fi for GetGo Gold!">
+          <div class="shop-emoji">💺</div>
+          <h4>Airport Lounge</h4>
+          <p>Premium Relaxation</p>
         </div>
       </div>
 
-      <div class="bottom-nav">
-        <div class="nav-item" data-page="home">
-          <span class="nav-icon">🏠</span><span>Home</span>
+      <div id="alertContainer"></div>
+      <div id="navMessage"></div>
+    </div>
+
+    <!-- MY TRIP PAGE - Live Flight Information -->
+    <div id="tripPage" class="page">
+      
+      <!-- Current Flight (User's booked flight) -->
+      <div class="flight-card">
+        <div class="flight-row">
+          <span class="flight-code">5J 584</span>
+          <span class="status-badge" id="flightStatus">On Time</span>
         </div>
-        <div class="nav-item" data-page="trip">
-          <span class="nav-icon">🛫</span><span>My Trip</span>
+        <div class="destination">✈️ Mactan-Cebu (CEB) → Manila (MNL)</div>
+        <div class="gate-time-info">
+          <span>🕒 Departure: 14:25</span>
+          <span>🚪 Gate: <strong id="gateNumber">B3</strong></span>
         </div>
-        <div class="nav-item" data-page="map">
-          <span class="nav-icon">📍</span><span>Map</span>
-        </div>
-        <div class="nav-item" data-page="profile">
-          <span class="nav-icon">👤</span><span>Profile</span>
-        </div>
+        <div style="margin-top: 12px; font-size: 13px; opacity: 0.9;">🎫 Check-in Row 4 | 🧳 Bag Drop A2</div>
+      </div>
+
+      <!-- Flight Type Selector (Arrivals / Departures) -->
+      <div class="flight-type">
+        <div class="type-option active" data-type="departures">🛫 Departures</div>
+        <div class="type-option" data-type="arrivals">🛬 Arrivals</div>
+      </div>
+
+      <div class="section-title">
+        <span>✈️ Live Flight Information</span>
+        <span style="font-size: 12px;">Updated real-time</span>
+      </div>
+
+      <!-- Flight List Container -->
+      <div class="flight-list" id="flightList">
+        <!-- Flights will be dynamically inserted here -->
       </div>
     </div>
 
-    <script>
-      // ============================================
-      // FLIGHT DATABASE
-      // ============================================
+    <!-- MAP PAGE -->
+    <div id="mapPage" class="page">
+      <div class="map-container">
+        <div style="font-size: 48px; margin-bottom: 12px;">🗺️</div>
+        <h3>Mactan-Cebu International Airport</h3>
+        <p style="color: #6c7a8e; margin-top: 8px;">Terminal 2 • Near Gate B3</p>
+        <div class="map-grid">
+          <div class="map-terminal" style="background: #2d6a4f; color: white;">📍 T2 (You are here)</div>
+          <div class="map-terminal">📍 Terminal 1</div>
+          <div class="map-terminal">🍗 Jollibee</div>
+          <div class="map-terminal">🥭 Pasalubong Center</div>
+        </div>
+      </div>
+      <div class="section-title">📍 Nearby Amenities</div>
+      <div class="trip-item" data-msg="🚻 Restroom: 2 minute walk. Turn left after Gate B3.">
+        <div class="trip-icon">🚻</div>
+        <div class="trip-details"><h4>Restroom</h4><p>2 min walk</p></div>
+        <span>→</span>
+      </div>
+      <div class="trip-item" data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members.">
+        <div class="trip-icon">💺</div>
+        <div class="trip-details"><h4>PAGSS Lounge</h4><p>3 min walk</p></div>
+        <span>→</span>
+      </div>
+      <div class="trip-item" data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating.">
+        <div class="trip-icon">🔌</div>
+        <div class="trip-details"><h4>Charging Stations</h4><p>1 min walk</p></div>
+        <span>→</span>
+      </div>
+      
+      <!-- Scanner Section - NON-INTERACTIVE with your image -->
+      <div class="scanner-section">
+        <img class="scanner-image" src="https://cdn-icons-png.flaticon.com/512/3082/3082421.png" alt="Scanner Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082421.png'">
+        <h4>📷 Scan & Pay</h4>
+        <p>QR code payment coming soon</p>
+        <div class="coming-soon">🔜 Coming Soon</div>
+      </div>
+    </div>
 
-      const flights = {
-        roundtrip: [
-          {
-            airline: "Cebu Pacific",
-            code: "5J 584",
-            from: "CEB",
-            to: "MNL",
-            depTime: "06:00",
-            arrTime: "07:25",
-            duration: "1h 25m",
-            price: "₱1,299",
-            gate: "B3",
-            icon: "✈️",
-          },
-          {
-            airline: "Philippine Airlines",
-            code: "PR 2860",
-            from: "CEB",
-            to: "MNL",
-            depTime: "08:30",
-            arrTime: "09:55",
-            duration: "1h 25m",
-            price: "₱1,899",
-            gate: "A5",
-            icon: "🛩️",
-          },
-          {
-            airline: "AirAsia",
-            code: "Z2 771",
-            from: "CEB",
-            to: "MNL",
-            depTime: "11:15",
-            arrTime: "12:40",
-            duration: "1h 25m",
-            price: "₱1,099",
-            gate: "C2",
-            icon: "🛫",
-          },
-          {
-            airline: "Cebu Pacific",
-            code: "5J 586",
-            from: "CEB",
-            to: "MNL",
-            depTime: "14:25",
-            arrTime: "15:50",
-            duration: "1h 25m",
-            price: "₱1,599",
-            gate: "B3",
-            icon: "✈️",
-          },
-          {
-            airline: "Philippine Airlines",
-            code: "PR 2862",
-            from: "CEB",
-            to: "MNL",
-            depTime: "17:45",
-            arrTime: "19:10",
-            duration: "1h 25m",
-            price: "₱2,199",
-            gate: "A5",
-            icon: "🛩️",
-          },
-          {
-            airline: "Cebu Pacific",
-            code: "5J 588",
-            from: "CEB",
-            to: "MNL",
-            depTime: "20:30",
-            arrTime: "21:55",
-            duration: "1h 25m",
-            price: "₱1,399",
-            gate: "B3",
-            icon: "✈️",
-          },
-        ],
-        oneway: [
-          {
-            airline: "Cebu Pacific",
-            code: "5J 584",
-            from: "CEB",
-            to: "MNL",
-            depTime: "06:00",
-            arrTime: "07:25",
-            duration: "1h 25m",
-            price: "₱799",
-            gate: "B3",
-            icon: "✈️",
-          },
-          {
-            airline: "AirAsia",
-            code: "Z2 771",
-            from: "CEB",
-            to: "MNL",
-            depTime: "11:15",
-            arrTime: "12:40",
-            duration: "1h 25m",
-            price: "₱599",
-            gate: "C2",
-            icon: "🛫",
-          },
-          {
-            airline: "Philippine Airlines",
-            code: "PR 2862",
-            from: "CEB",
-            to: "MNL",
-            depTime: "17:45",
-            arrTime: "19:10",
-            duration: "1h 25m",
-            price: "₱1,299",
-            gate: "A5",
-            icon: "🛩️",
-          },
-        ],
-        multicity: [
-          {
-            airline: "Cebu Pacific",
-            code: "5J 584",
-            segments: [
-              { from: "CEB", to: "MNL", depTime: "06:00", arrTime: "07:25" },
-              { from: "MNL", to: "ICN", depTime: "09:00", arrTime: "14:00" },
-            ],
-            duration: "Total: 8h",
-            price: "₱8,999",
-            icon: "✈️",
-          },
-          {
-            airline: "Philippine Airlines",
-            code: "PR 2860",
-            segments: [
-              { from: "CEB", to: "MNL", depTime: "08:30", arrTime: "09:55" },
-              { from: "MNL", to: "TYO", depTime: "12:00", arrTime: "17:00" },
-            ],
-            duration: "Total: 8h 30m",
-            price: "₱12,499",
-            icon: "🛩️",
-          },
-          {
-            airline: "Singapore Airlines",
-            code: "SQ 921",
-            segments: [
-              { from: "CEB", to: "SIN", depTime: "10:15", arrTime: "13:45" },
-              { from: "SIN", to: "LHR", depTime: "16:00", arrTime: "22:00" },
-            ],
-            duration: "Total: 11h 45m",
-            price: "₱24,999",
-            icon: "🌟",
-          },
-        ],
-      };
+    <!-- PROFILE PAGE -->
+    <div id="profilePage" class="page">
+      <div class="profile-header">
+        <div class="avatar">👤</div>
+        <h3>Juan Dela Cruz</h3>
+        <p style="color: #6c7a8e;">juan@email.com</p>
+        <p style="color: #2d6a4f; margin-top: 8px;">✈️ Cebu Pacific • GetGo Gold Member</p>
+      </div>
+      <div class="points-card">
+        <div>🌟 GetGo Loyalty Points</div>
+        <div class="points-number">5,280</div>
+        <div style="font-size: 12px; margin-top: 8px;">Next tier: 7,500 points</div>
+      </div>
+      <div class="section-title">⚙️ Preferences</div>
+      <div class="trip-item" data-msg="🔔 Push notifications enabled for gate changes & boarding">
+        <div class="trip-icon">🔔</div>
+        <div class="trip-details"><h4>Push Notifications</h4><p>Enabled for gate changes & boarding</p></div>
+        <span>✓</span>
+      </div>
+      <div class="trip-item" data-msg="🌍 Language set to English / Filipino">
+        <div class="trip-icon">🌍</div>
+        <div class="trip-details"><h4>Language</h4><p>English / Filipino</p></div>
+        <span>→</span>
+      </div>
+      <div class="trip-item" data-msg="🎫 Saved passengers: Juan Dela Cruz, Maria Santos">
+        <div class="trip-icon">🎫</div>
+        <div class="trip-details"><h4>Saved Passengers</h4><p>Juan Dela Cruz, Maria Santos</p></div>
+        <span>→</span>
+      </div>
+    </div>
+  </div>
 
-      let currentTripType = "roundtrip";
-      let selectedFlight = null;
+  <!-- Bottom Navigation (no Scan button anymore - it's inside Map page) -->
+  <div class="bottom-nav">
+    <div class="nav-item" data-page="home"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" data-page="trip"><span class="nav-icon">🛫</span><span>My Trip</span></div>
+    <div class="nav-item" data-page="map"><span class="nav-icon">📍</span><span>Map</span></div>
+    <div class="nav-item" data-page="profile"><span class="nav-icon">👤</span><span>Profile</span></div>
+  </div>
+</div>
 
-      // Render flights based on trip type
-      function renderFlights() {
-        const container = document.getElementById("flightBrowser");
-        const flightData = flights[currentTripType];
+<script>
+  // ============================================
+  // HIDE ADS ON NON-HOME PAGES
+  // ============================================
+  
+  const adsHeader = document.getElementById('adsHeader');
+  
+  function updateAdsVisibility(pageId) {
+    if (pageId === 'home') {
+      adsHeader.style.display = 'block';
+    } else {
+      adsHeader.style.display = 'none';
+    }
+  }
 
-        if (!container) return;
+  // ============================================
+  // LIVE FLIGHT DATA (Departures & Arrivals)
+  // ============================================
+  
+  const departures = [
+    { airline: "Cebu Pacific", code: "5J 584", destination: "Manila (MNL)", time: "14:25", status: "On Time", gate: "B3", icon: "✈️" },
+    { airline: "Philippine Airlines", code: "PR 2860", destination: "Manila (MNL)", time: "15:10", status: "Boarding", gate: "A5", icon: "🛩️" },
+    { airline: "AirAsia", code: "Z2 771", destination: "Clark (CRK)", time: "16:00", status: "On Time", gate: "C2", icon: "🛫" },
+    { airline: "Cebu Pacific", code: "5J 586", destination: "Tokyo (NRT)", time: "17:30", status: "Delayed", gate: "B4", icon: "✈️" },
+    { airline: "Singapore Airlines", code: "SQ 921", destination: "Singapore (SIN)", time: "18:45", status: "On Time", gate: "D1", icon: "🌟" },
+    { airline: "Korean Air", code: "KE 578", destination: "Seoul (ICN)", time: "20:15", status: "On Time", gate: "D3", icon: "🛩️" },
+    { airline: "Cathay Pacific", code: "CX 902", destination: "Hong Kong (HKG)", time: "21:30", status: "On Time", gate: "A8", icon: "✈️" }
+  ];
 
-        container.innerHTML = "";
+  const arrivals = [
+    { airline: "Cebu Pacific", code: "5J 583", from: "Manila (MNL)", time: "13:45", status: "Arrived", gate: "B3", icon: "✈️" },
+    { airline: "Philippine Airlines", code: "PR 2859", from: "Manila (MNL)", time: "14:30", status: "On Time", gate: "A5", icon: "🛩️" },
+    { airline: "AirAsia", code: "Z2 770", from: "Clark (CRK)", time: "15:20", status: "On Time", gate: "C2", icon: "🛫" },
+    { airline: "Cebu Pacific", code: "5J 585", from: "Tokyo (NRT)", time: "16:45", status: "Delayed", gate: "B4", icon: "✈️" },
+    { airline: "Singapore Airlines", code: "SQ 920", from: "Singapore (SIN)", time: "18:00", status: "On Time", gate: "D1", icon: "🌟" },
+    { airline: "Korean Air", code: "KE 577", from: "Seoul (ICN)", time: "19:30", status: "On Time", gate: "D3", icon: "🛩️" },
+    { airline: "Cathay Pacific", code: "CX 901", from: "Hong Kong (HKG)", time: "20:45", status: "Arrived", gate: "A8", icon: "✈️" }
+  ];
 
-        flightData.forEach((flight, index) => {
-          const flightCard = document.createElement("div");
-          flightCard.className = "flight-card-browser";
-          if (currentTripType === "multicity")
-            flightCard.classList.add("multi-city-flight");
+  let currentFlightType = "departures";
 
-          if (currentTripType === "multicity") {
-            // Multi-city display
-            let segmentsHtml = "";
-            flight.segments.forEach((seg, i) => {
-              segmentsHtml += `
-            <div style="margin-bottom: 8px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span><strong>${seg.depTime}</strong> ${seg.from}</span>
-                <span>→</span>
-                <span><strong>${seg.arrTime}</strong> ${seg.to}</span>
-              </div>
-            </div>
-          `;
-              if (i < flight.segments.length - 1) {
-                segmentsHtml += `<div style="height: 2px; background: #e1e8ed; margin: 8px 0;"></div>`;
-              }
-            });
+  function getStatusClass(status) {
+    switch(status) {
+      case "On Time": return "on-time";
+      case "Delayed": return "delayed";
+      case "Boarding": return "boarding";
+      case "Arrived": return "arrived";
+      default: return "on-time";
+    }
+  }
 
-            flightCard.innerHTML = `
-          <div class="flight-header">
-            <div class="airline">
-              <span class="airline-icon">${flight.icon}</span>
-              <span class="airline-name">${flight.airline}</span>
-              <span style="font-size: 12px; color:#6c7a8e;">${flight.code}</span>
-            </div>
-            <div class="price">${flight.price}</div>
-          </div>
-          ${segmentsHtml}
-          <div class="flight-duration">⏱️ ${flight.duration}</div>
-        `;
-          } else {
-            // Regular flight display
-            flightCard.innerHTML = `
-          <div class="flight-header">
-            <div class="airline">
-              <span class="airline-icon">${flight.icon}</span>
-              <span class="airline-name">${flight.airline}</span>
-              <span style="font-size: 12px; color:#6c7a8e;">${flight.code}</span>
-            </div>
-            <div class="price">${flight.price}</div>
+  function renderFlights() {
+    const container = document.getElementById('flightList');
+    const flights = currentFlightType === "departures" ? departures : arrivals;
+    const isDeparture = currentFlightType === "departures";
+    
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    flights.forEach(flight => {
+      const flightItem = document.createElement('div');
+      flightItem.className = 'flight-item';
+      
+      flightItem.innerHTML = `
+        <div class="flight-info">
+          <div class="flight-airline">
+            <span class="airline-icon">${flight.icon}</span>
+            <span class="airline-name">${flight.airline}</span>
+            <span class="flight-code">${flight.code}</span>
           </div>
           <div class="flight-route">
-            <div class="departure">
-              <div class="time">${flight.depTime}</div>
-              <div class="code">${flight.from}</div>
-            </div>
-            <div class="flight-line"></div>
-            <div class="arrival">
-              <div class="time">${flight.arrTime}</div>
-              <div class="code">${flight.to}</div>
-            </div>
+            ${isDeparture ? `→ ${flight.destination}` : `← ${flight.from}`}
           </div>
-          <div class="flight-duration">⏱️ ${flight.duration}</div>
-        `;
-          }
+          <div class="flight-time">🕒 ${flight.time}</div>
+        </div>
+        <div class="flight-status">
+          <span class="status ${getStatusClass(flight.status)}">${flight.status}</span>
+          <div class="gate">🚪 Gate ${flight.gate}</div>
+        </div>
+      `;
+      
+      container.appendChild(flightItem);
+    });
+  }
 
-          flightCard.addEventListener("click", () => {
-            // Remove selected class from all
-            document
-              .querySelectorAll(".flight-card-browser")
-              .forEach((card) => {
-                card.style.border = "1px solid #e1e8ed";
-                card.style.background = "white";
-              });
-            flightCard.style.border = "2px solid #2d6a4f";
-            flightCard.style.background = "#f0f7f0";
-            selectedFlight = flight;
-            document.getElementById("selectedFlightText").innerText =
-              `${flight.airline} ${flight.code} - ${flight.price}`;
-          });
-
-          container.appendChild(flightCard);
-        });
-      }
-
-      // Trip type selector
-      document.querySelectorAll(".trip-option").forEach((option) => {
-        option.addEventListener("click", () => {
-          document
-            .querySelectorAll(".trip-option")
-            .forEach((opt) => opt.classList.remove("active"));
-          option.classList.add("active");
-          currentTripType = option.getAttribute("data-trip");
-          renderFlights();
-          selectedFlight = null;
-          document.getElementById("selectedFlightText").innerText =
-            "No flight selected";
-        });
-      });
-
-      // Confirm booking
-      document
-        .getElementById("confirmBookingBtn")
-        .addEventListener("click", () => {
-          if (!selectedFlight) {
-            const msgDiv = document.getElementById("navMessage");
-            if (msgDiv) {
-              msgDiv.innerHTML = "⚠️ Please select a flight first!";
-              msgDiv.style.display = "block";
-              setTimeout(() => {
-                msgDiv.style.display = "none";
-              }, 3000);
-            }
-            return;
-          }
-
-          const bookingCard = document.getElementById("currentBookingCard");
-          const bookedFlightCode = document.getElementById("bookedFlightCode");
-          const bookedFlightRoute =
-            document.getElementById("bookedFlightRoute");
-          const bookedFlightTime = document.getElementById("bookedFlightTime");
-          const bookedFlightGate = document.getElementById("bookedFlightGate");
-
-          if (currentTripType === "multicity") {
-            bookedFlightCode.innerText = selectedFlight.code;
-            bookedFlightRoute.innerText = `✈️ ${selectedFlight.segments[0].from} → ${selectedFlight.segments[selectedFlight.segments.length - 1].to} (Multi-City)`;
-            bookedFlightTime.innerText = `🕒 ${selectedFlight.segments[0].depTime}`;
-            bookedFlightGate.innerText = `🚪 Check-in desk`;
-          } else {
-            bookedFlightCode.innerText = selectedFlight.code;
-            bookedFlightRoute.innerText = `✈️ ${selectedFlight.from} → ${selectedFlight.to}`;
-            bookedFlightTime.innerText = `🕒 ${selectedFlight.depTime}`;
-            bookedFlightGate.innerText = `🚪 Gate ${selectedFlight.gate}`;
-          }
-
-          bookingCard.style.display = "block";
-
-          const msgDiv = document.getElementById("navMessage");
-          if (msgDiv) {
-            msgDiv.innerHTML = `✅ Booking confirmed! ${selectedFlight.airline} ${selectedFlight.code} - ${selectedFlight.price}`;
-            msgDiv.style.display = "block";
-            setTimeout(() => {
-              msgDiv.style.display = "none";
-            }, 5000);
-          }
-        });
-
-      // Initialize flights
+  // Flight type selector
+  document.querySelectorAll('.type-option').forEach(option => {
+    option.addEventListener('click', () => {
+      document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      currentFlightType = option.getAttribute('data-type');
       renderFlights();
+    });
+  });
 
-      // ADS CAROUSEL
-      const carousel = document.getElementById("adsCarousel");
-      const dotsContainer = document.getElementById("adDots");
-      let adCards = [];
-      let currentIndex = 0;
-      let autoScrollInterval;
+  // Initial render
+  renderFlights();
 
-      if (carousel && dotsContainer) {
-        adCards = document.querySelectorAll(".ad-card");
-        adCards.forEach((_, index) => {
-          const dot = document.createElement("div");
-          dot.classList.add("dot");
-          if (index === 0) dot.classList.add("active");
-          dot.addEventListener("click", () => {
-            currentIndex = index;
-            scrollToAd(currentIndex);
-            resetAutoScroll();
-          });
-          dotsContainer.appendChild(dot);
-        });
+  // ADS CAROUSEL
+  const carousel = document.getElementById('adsCarousel');
+  const dotsContainer = document.getElementById('adDots');
+  let adCards = [];
+  let currentIndex = 0;
+  let autoScrollInterval;
 
-        function scrollToAd(index) {
-          const adWidth = adCards[0].offsetWidth;
-          carousel.scrollTo({ left: index * adWidth, behavior: "smooth" });
-          updateDots(index);
-        }
-
-        function updateDots(index) {
-          document.querySelectorAll(".dot").forEach((dot, i) => {
-            if (i === index) dot.classList.add("active");
-            else dot.classList.remove("active");
-          });
-        }
-
-        function nextAd() {
-          currentIndex = (currentIndex + 1) % adCards.length;
-          scrollToAd(currentIndex);
-        }
-
-        function resetAutoScroll() {
-          clearInterval(autoScrollInterval);
-          autoScrollInterval = setInterval(nextAd, 4000);
-        }
-        autoScrollInterval = setInterval(nextAd, 4000);
-        carousel.addEventListener("scroll", () => {
-          const adWidth = adCards[0].offsetWidth;
-          const newIndex = Math.round(carousel.scrollLeft / adWidth);
-          if (newIndex !== currentIndex && newIndex < adCards.length) {
-            currentIndex = newIndex;
-            updateDots(currentIndex);
-            resetAutoScroll();
-          }
-        });
+  if (carousel && dotsContainer) {
+    adCards = document.querySelectorAll('.ad-card');
+    adCards.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (index === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => {
+        currentIndex = index;
+        scrollToAd(currentIndex);
+        resetAutoScroll();
+      });
+      dotsContainer.appendChild(dot);
+    });
+    
+    function scrollToAd(index) {
+      const adWidth = adCards[0].offsetWidth;
+      carousel.scrollTo({ left: index * adWidth, behavior: 'smooth' });
+      updateDots(index);
+    }
+    
+    function updateDots(index) {
+      document.querySelectorAll('.dot').forEach((dot, i) => {
+        if (i === index) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+    
+    function nextAd() {
+      currentIndex = (currentIndex + 1) % adCards.length;
+      scrollToAd(currentIndex);
+    }
+    
+    function resetAutoScroll() {
+      clearInterval(autoScrollInterval);
+      autoScrollInterval = setInterval(nextAd, 4000);
+    }
+    autoScrollInterval = setInterval(nextAd, 4000);
+    carousel.addEventListener('scroll', () => {
+      const adWidth = adCards[0].offsetWidth;
+      const newIndex = Math.round(carousel.scrollLeft / adWidth);
+      if (newIndex !== currentIndex && newIndex < adCards.length) {
+        currentIndex = newIndex;
+        updateDots(currentIndex);
+        resetAutoScroll();
       }
+    });
+  }
 
-      // SEARCH
-      const searchInput = document.getElementById("searchInput");
-      searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          const msgDiv = document.getElementById("navMessage");
-          if (msgDiv) {
-            msgDiv.innerHTML = `🔍 Searching for "${searchInput.value}"... Results found at MCIA!`;
-            msgDiv.style.display = "block";
-            setTimeout(() => {
-              msgDiv.style.display = "none";
-            }, 4000);
-          }
-          searchInput.value = "";
-        }
-      });
-
-      // PAGE NAVIGATION
-      function switchPage(pageId) {
-        document
-          .querySelectorAll(".page")
-          .forEach((page) => page.classList.remove("active-page"));
-        document.getElementById(`${pageId}Page`).classList.add("active-page");
-        document.querySelectorAll(".nav-item").forEach((nav) => {
-          nav.classList.remove("active");
-          if (nav.getAttribute("data-page") === pageId)
-            nav.classList.add("active");
-        });
+  // SEARCH
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const msgDiv = document.getElementById('navMessage');
+      if (msgDiv) {
+        msgDiv.innerHTML = `🔍 Searching for "${searchInput.value}"... Results found at MCIA!`;
+        msgDiv.style.display = "block";
+        setTimeout(() => { msgDiv.style.display = "none"; }, 4000);
       }
-      document.querySelectorAll(".nav-item").forEach((nav) => {
-        nav.addEventListener("click", () =>
-          switchPage(nav.getAttribute("data-page")),
-        );
-      });
+      searchInput.value = '';
+    }
+  });
 
-      // CLICK HANDLERS for cards
-      document
-        .querySelectorAll(".attraction-card, .shop-card")
-        .forEach((item) => {
-          item.addEventListener("click", () => {
-            const msg =
-              item.getAttribute("data-msg") ||
-              "📍 More info would appear here.";
-            const msgDiv = document.getElementById("navMessage");
-            if (msgDiv) {
-              msgDiv.innerHTML = msg;
-              msgDiv.style.display = "block";
-              setTimeout(() => {
-                msgDiv.style.display = "none";
-              }, 5000);
-            }
-          });
-        });
-      document.querySelectorAll(".trip-item").forEach((item) => {
-        item.addEventListener("click", () => {
-          const msg =
-            item.getAttribute("data-msg") ||
-            "📱 More details would appear here.";
-          const msgDiv = document.getElementById("navMessage");
-          if (msgDiv) {
-            msgDiv.innerHTML = msg;
-            msgDiv.style.display = "block";
-            setTimeout(() => {
-              msgDiv.style.display = "none";
-            }, 5000);
-          }
-        });
-      });
+  // PAGE NAVIGATION
+  function switchPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+    document.getElementById(`${pageId}Page`).classList.add('active-page');
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      nav.classList.remove('active');
+      if (nav.getAttribute('data-page') === pageId) nav.classList.add('active');
+    });
+    
+    // Update ads visibility
+    updateAdsVisibility(pageId);
+  }
+  
+  document.querySelectorAll('.nav-item').forEach(nav => {
+    nav.addEventListener('click', () => {
+      switchPage(nav.getAttribute('data-page'));
+    });
+  });
 
-      // GATE CHANGE ALERT
-      let gateChanged = false;
+  // CLICK HANDLERS
+  document.querySelectorAll('.attraction-card, .shop-card').forEach(item => {
+    item.addEventListener('click', () => {
+      const msg = item.getAttribute('data-msg') || "📍 More info would appear here.";
+      const msgDiv = document.getElementById('navMessage');
+      if (msgDiv) {
+        msgDiv.innerHTML = msg;
+        msgDiv.style.display = "block";
+        setTimeout(() => { msgDiv.style.display = "none"; }, 5000);
+      }
+    });
+  });
+  document.querySelectorAll('.trip-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const msg = item.getAttribute('data-msg') || "📱 More details would appear here.";
+      const msgDiv = document.getElementById('navMessage');
+      if (msgDiv) {
+        msgDiv.innerHTML = msg;
+        msgDiv.style.display = "block";
+        setTimeout(() => { msgDiv.style.display = "none"; }, 5000);
+      }
+    });
+  });
+
+  // GATE CHANGE ALERT
+  let gateChanged = false;
+  setTimeout(() => {
+    if (!gateChanged) {
+      gateChanged = true;
+      const newGate = "C7";
+      const gateElement = document.getElementById('gateNumber');
+      const statusElement = document.getElementById('flightStatus');
+      if (gateElement) gateElement.innerHTML = newGate;
+      if (statusElement) {
+        statusElement.innerHTML = "Gate Changed";
+        statusElement.style.background = "#e07c3c";
+      }
+      const alertContainer = document.getElementById('alertContainer');
+      if (alertContainer && document.getElementById('tripPage').classList.contains('active-page')) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert-banner';
+        alertDiv.innerHTML = `<span>⚠️</span><span><strong>Gate Change Alert!</strong> Now departing from Gate ${newGate}. 5 min walk.</span><button id="closeAlert" style="background:none; border:none; font-size: 18px; margin-left: auto;">✕</button>`;
+        alertContainer.appendChild(alertDiv);
+        document.getElementById('closeAlert')?.addEventListener('click', () => alertDiv.remove());
+      }
+      const flightCard = document.querySelector('#tripPage .flight-card');
+      if (flightCard) flightCard.style.background = "linear-gradient(135deg, #9e2d2f, #c73e3e)";
+    }
+  }, 10000);
+
+  window.addEventListener('load', () => {
+    const msgDiv = document.getElementById('navMessage');
+    if (msgDiv) {
       setTimeout(() => {
-        if (!gateChanged) {
-          gateChanged = true;
-          const newGate = "C7";
-          const gateElement = document.getElementById("gateNumber");
-          const statusElement = document.getElementById("flightStatus");
-          if (gateElement) gateElement.innerHTML = newGate;
-          if (statusElement) {
-            statusElement.innerHTML = "Gate Changed";
-            statusElement.style.background = "#e07c3c";
-          }
-          const alertContainer = document.getElementById("alertContainer");
-          if (
-            alertContainer &&
-            document
-              .getElementById("tripPage")
-              .classList.contains("active-page")
-          ) {
-            const alertDiv = document.createElement("div");
-            alertDiv.className = "alert-banner";
-            alertDiv.innerHTML = `<span>⚠️</span><span><strong>Gate Change Alert!</strong> Now departing from Gate ${newGate}. 5 min walk.</span><button id="closeAlert" style="background:none; border:none; font-size: 18px; margin-left: auto;">✕</button>`;
-            alertContainer.appendChild(alertDiv);
-            document
-              .getElementById("closeAlert")
-              ?.addEventListener("click", () => alertDiv.remove());
-          }
-          const flightCard = document.querySelector("#tripPage .flight-card");
-          if (flightCard)
-            flightCard.style.background =
-              "linear-gradient(135deg, #9e2d2f, #c73e3e)";
-        }
-      }, 10000);
-
-      window.addEventListener("load", () => {
-        const msgDiv = document.getElementById("navMessage");
-        if (msgDiv) {
-          setTimeout(() => {
-            msgDiv.innerHTML =
-              "✨ Welcome to MCIA Flow! Explore shops, dining, and attractions at Mactan-Cebu Airport. ✨";
-            msgDiv.style.display = "block";
-            setTimeout(() => {
-              msgDiv.style.display = "none";
-            }, 6000);
-          }, 1000);
-        }
-      });
-    </script>
-  </body>
+        msgDiv.innerHTML = "✨ Welcome to MCIA Flow! Explore shops, dining, and attractions at Mactan-Cebu Airport. ✨";
+        msgDiv.style.display = "block";
+        setTimeout(() => { msgDiv.style.display = "none"; }, 6000);
+      }, 1000);
+    }
+  });
+</script>
+</body>
 </html>
