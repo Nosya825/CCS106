@@ -116,10 +116,6 @@
       filter: brightness(70%);
     }
 
-    .ad-text {
-      display: none;
-    }
-
     .ad-dots {
       position: absolute;
       bottom: 12px;
@@ -262,25 +258,10 @@
       font-weight: 600;
     }
 
-    .status.on-time {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    .status.delayed {
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    .status.boarding {
-      background: #fff3e0;
-      color: #f5a623;
-    }
-
-    .status.arrived {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
+    .status.on-time { background: #e8f5e9; color: #2e7d32; }
+    .status.delayed { background: #ffebee; color: #c62828; }
+    .status.boarding { background: #fff3e0; color: #f5a623; }
+    .status.arrived { background: #e3f2fd; color: #1565c0; }
 
     .gate {
       font-size: 11px;
@@ -384,13 +365,42 @@
       display: block;
     }
 
-    .flight-card {
+    /* Ticket Card - Only shown when logged in */
+    .ticket-card {
       background: linear-gradient(135deg, #1b4d2e, #2d6a4f);
       margin: 16px 16px;
       padding: 20px;
       border-radius: 28px;
       color: white;
       box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      display: none;
+    }
+
+    .ticket-card.show {
+      display: block;
+    }
+
+    .login-prompt {
+      background: #e8f0fe;
+      margin: 16px;
+      padding: 30px 20px;
+      border-radius: 28px;
+      text-align: center;
+    }
+
+    .login-prompt p {
+      color: #6c7a8e;
+      margin-bottom: 16px;
+    }
+
+    .login-prompt button {
+      background: linear-gradient(135deg, #2d6a4f, #1b4d2e);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     .flight-row {
@@ -558,6 +568,107 @@
       text-align: center;
       display: none;
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      max-width: 340px;
+      width: 90%;
+      background: white;
+      border-radius: 32px;
+      padding: 24px;
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content h3 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #1e2a3a;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      border: 1px solid #e1e8ed;
+      border-radius: 16px;
+      font-size: 15px;
+      background: #f5f7fb;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2d6a4f, #1b4d2e);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .modal-switch {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #6c7a8e;
+    }
+
+    .modal-switch a {
+      color: #2d6a4f;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 12px;
+      display: none;
+    }
+
+    .modal-message.error {
+      background: #ffebee;
+      color: #c62828;
+      display: block;
+    }
+
+    .modal-message.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -598,7 +709,6 @@
     
     <!-- HOME PAGE -->
     <div id="homePage" class="page active-page">
-      
       <div class="welcome-banner">
         <h3>Welcome to MCIA! 🌿🇵🇭</h3>
         <p>Your guide to Mactan-Cebu International Airport</p>
@@ -608,22 +718,22 @@
         <span>🏨 Airport Services & Amenities</span>
       </div>
       <div class="attractions-grid">
-        <div class="attraction-card" data-msg="🏨 Waterfront Airport Hotel: Located just 2 minutes from the terminal. Perfect for layovers, day rooms, and overnight stays. Book online or at the front desk.">
+        <div class="attraction-card" data-msg="🏨 Waterfront Airport Hotel: Located just 2 minutes from the terminal. Perfect for layovers, day rooms, and overnight stays.">
           <div class="attraction-emoji">🏨</div>
           <h4>Waterfront Hotel</h4>
           <p>Connected to airport</p>
         </div>
-        <div class="attraction-card" data-msg="🚐 Free Shuttle Service: Runs every 15 minutes between Terminal 1 and Terminal 2. Travel time is approximately 5 minutes. Look for the blue shuttle signs.">
+        <div class="attraction-card" data-msg="🚐 Free Shuttle Service: Runs every 15 minutes between Terminal 1 and Terminal 2.">
           <div class="attraction-emoji">🚐</div>
           <h4>Terminal Shuttle</h4>
           <p>Free • T1 ↔ T2</p>
         </div>
-        <div class="attraction-card" data-msg="👀 Viewing Deck: Watch planes take off and land from the 3rd floor viewing area. Open 24/7. Great for aviation enthusiasts and families.">
+        <div class="attraction-card" data-msg="👀 Viewing Deck: Watch planes take off and land from the 3rd floor viewing area. Open 24/7.">
           <div class="attraction-emoji">👀</div>
           <h4>Viewing Deck</h4>
           <p>Terminal 2 • Free</p>
         </div>
-        <div class="attraction-card" data-msg="💺 PAGSS Lounge: Premium lounge with complimentary food, drinks, Wi-Fi, and showers. Free for GetGo Gold members. Day pass available for ₱1,200.">
+        <div class="attraction-card" data-msg="💺 PAGSS Lounge: Premium lounge with complimentary food, drinks, Wi-Fi, and showers. Free for GetGo Gold members.">
           <div class="attraction-emoji">💺</div>
           <h4>Airport Lounge</h4>
           <p>PAGSS • Premium</p>
@@ -634,22 +744,22 @@
         <span>🛍️ Shops & Dining</span>
       </div>
       <div class="shops-grid">
-        <div class="shop-card" data-msg="🍗 Jollibee: Enjoy Chickenjoy, Jolly Spaghetti, and Peach Mango Pie. Located at Terminal 2 Departure area.">
+        <div class="shop-card" data-msg="🍗 Jollibee: Enjoy Chickenjoy, Jolly Spaghetti, and Peach Mango Pie.">
           <div class="shop-emoji">🍗</div>
           <h4>Jollibee</h4>
           <p>Filipino Fast Food</p>
         </div>
-        <div class="shop-card" data-msg="🥭 Cebu Gift Shop: Best place for dried mangoes, otap, rosquillos, and lechon belly! Pasalubong shopping at Terminal 1 & 2.">
+        <div class="shop-card" data-msg="🥭 Cebu Gift Shop: Best place for dried mangoes, otap, rosquillos!">
           <div class="shop-emoji">🥭</div>
           <h4>Pasalubong Center</h4>
           <p>Souvenirs & Gifts</p>
         </div>
-        <div class="shop-card" data-msg="☕ Bo's Coffee: Premium Philippine coffee. Try their famous Cebu blend! Located at Terminal 2 near Gate B3.">
+        <div class="shop-card" data-msg="☕ Bo's Coffee: Premium Philippine coffee. Try their famous Cebu blend!">
           <div class="shop-emoji">☕</div>
           <h4>Bo's Coffee</h4>
           <p>Coffee Shop</p>
         </div>
-        <div class="shop-card" data-msg="🛍️ Duty Free Philippines: Tax-free shopping - perfumes, chocolates, liquor, and luxury goods. Show your boarding pass.">
+        <div class="shop-card" data-msg="🛍️ Duty Free Philippines: Tax-free shopping - perfumes, chocolates, liquor.">
           <div class="shop-emoji">🛍️</div>
           <h4>Duty Free</h4>
           <p>Tax-Free Shopping</p>
@@ -657,17 +767,17 @@
       </div>
 
       <div class="shops-grid" style="margin-top: 4px;">
-        <div class="shop-card" data-msg="🍜 Mang Inasal: Famous for Chicken Inasal and unlimited rice! A Cebu favorite. Located at Terminal 1 Departure area.">
+        <div class="shop-card" data-msg="🍜 Mang Inasal: Famous for Chicken Inasal and unlimited rice!">
           <div class="shop-emoji">🍜</div>
           <h4>Mang Inasal</h4>
           <p>Grilled Chicken</p>
         </div>
-        <div class="shop-card" data-msg="🥩 Cebu Lechon: Authentic Cebu lechon - crispy skin, juicy meat. Available at the Pasalubong Center and select restaurants.">
+        <div class="shop-card" data-msg="🥩 Cebu Lechon: Authentic Cebu lechon - crispy skin, juicy meat.">
           <div class="shop-emoji">🥩</div>
           <h4>Cebu Lechon</h4>
           <p>Local Delicacy</p>
         </div>
-        <div class="shop-card" data-msg="🧴 Bench: Popular Filipino clothing, fragrances, and accessories. Great for last-minute pasalubong!">
+        <div class="shop-card" data-msg="🧴 Bench: Popular Filipino clothing, fragrances, accessories.">
           <div class="shop-emoji">🧴</div>
           <h4>Bench</h4>
           <p>Clothing & Gifts</p>
@@ -678,20 +788,27 @@
       <div id="navMessage"></div>
     </div>
 
-    <!-- MY TRIP PAGE -->
+    <!-- MY TRIP PAGE - Ticket only shows when logged in -->
     <div id="tripPage" class="page">
       
-      <div class="flight-card">
+      <!-- Ticket Card (hidden until login) -->
+      <div id="ticketCard" class="ticket-card">
         <div class="flight-row">
-          <span class="flight-code">5J 584</span>
-          <span class="status-badge" id="flightStatus">On Time</span>
+          <span class="flight-code" id="ticketFlightCode">5J 584</span>
+          <span class="status-badge" id="ticketStatus">On Time</span>
         </div>
-        <div class="destination">✈️ Mactan-Cebu (CEB) → Manila (MNL)</div>
+        <div class="destination" id="ticketRoute">✈️ Mactan-Cebu (CEB) → Manila (MNL)</div>
         <div class="gate-time-info">
-          <span>🕒 Departure: 14:25</span>
-          <span>🚪 Gate: <strong id="gateNumber">B3</strong></span>
+          <span id="ticketTime">🕒 Departure: 14:25</span>
+          <span id="ticketGate">🚪 Gate: B3</span>
         </div>
-        <div style="margin-top: 12px; font-size: 13px; opacity: 0.9;">🎫 Check-in Row 4 | 🧳 Bag Drop A2</div>
+        <div style="margin-top: 12px; font-size: 13px; opacity: 0.9;" id="ticketDetails">🎫 Check-in Row 4 | 🧳 Bag Drop A2</div>
+      </div>
+
+      <!-- Login Prompt (shown when not logged in) -->
+      <div id="loginPrompt" class="login-prompt">
+        <p>🔐 Please login to view your flight ticket</p>
+        <button id="promptLoginBtn">Login / Register</button>
       </div>
 
       <div class="flight-type">
@@ -729,12 +846,12 @@
         <div class="trip-details"><h4>Restroom</h4><p>2 min walk</p></div>
         <span>→</span>
       </div>
-      <div class="trip-item" data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members. Day pass available.">
+      <div class="trip-item" data-msg="💺 PAGSS Lounge: 3 minute walk. Free for GetGo Gold members.">
         <div class="trip-icon">💺</div>
         <div class="trip-details"><h4>PAGSS Lounge</h4><p>3 min walk</p></div>
         <span>→</span>
       </div>
-      <div class="trip-item" data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating area.">
+      <div class="trip-item" data-msg="🔌 Charging Stations: 1 minute walk. Near Gate B3 seating.">
         <div class="trip-icon">🔌</div>
         <div class="trip-details"><h4>Charging Stations</h4><p>1 min walk</p></div>
         <span>→</span>
@@ -756,15 +873,15 @@
     <!-- PROFILE PAGE -->
     <div id="profilePage" class="page">
       <div class="profile-header">
-        <div class="avatar">👤</div>
-        <h3>Juan Dela Cruz</h3>
-        <p style="color: #6c7a8e;">juan@email.com</p>
-        <p style="color: #2d6a4f; margin-top: 8px;">✈️ Cebu Pacific • GetGo Gold Member</p>
+        <div class="avatar" id="profileAvatar">👤</div>
+        <h3 id="profileName">Guest User</h3>
+        <p id="profileEmail" style="color: #6c7a8e;">Not logged in</p>
+        <p id="profileStatus" style="color: #f5a623; margin-top: 8px;">🔓 Guest Mode</p>
       </div>
       <div class="points-card">
         <div>🌟 GetGo Loyalty Points</div>
-        <div class="points-number">5,280</div>
-        <div style="font-size: 12px; margin-top: 8px;">Next tier: 7,500 points</div>
+        <div class="points-number" id="profilePoints">0</div>
+        <div style="font-size: 12px; margin-top: 8px;">Login to earn points!</div>
       </div>
       <div class="section-title">⚙️ Preferences</div>
       <div class="trip-item" data-msg="🔔 Push notifications enabled for gate changes & boarding">
@@ -777,11 +894,14 @@
         <div class="trip-details"><h4>Language</h4><p>English / Filipino</p></div>
         <span>→</span>
       </div>
-      <div class="trip-item" data-msg="🎫 Saved passengers: Juan Dela Cruz, Maria Santos">
+      <div class="trip-item" data-msg="🎫 Saved passengers: Guest User">
         <div class="trip-icon">🎫</div>
-        <div class="trip-details"><h4>Saved Passengers</h4><p>Juan Dela Cruz, Maria Santos</p></div>
+        <div class="trip-details"><h4>Saved Passengers</h4><p id="savedPassengers">None (Login to save)</p></div>
         <span>→</span>
       </div>
+      <button id="logoutBtn" style="background: #c62828; color: white; border: none; padding: 14px; border-radius: 30px; width: calc(100% - 32px); margin: 20px 16px; font-weight: 600; cursor: pointer; display: none;">
+        🚪 Logout
+      </button>
     </div>
   </div>
 
@@ -793,7 +913,229 @@
   </div>
 </div>
 
+<!-- LOGIN/REGISTER MODAL -->
+<div id="authModal" class="modal-overlay">
+  <div class="modal-content">
+    <div id="modalLoginForm">
+      <h3>🔐 Login</h3>
+      <input type="email" id="modalLoginEmail" class="modal-input" placeholder="Email">
+      <input type="password" id="modalLoginPassword" class="modal-input" placeholder="Password">
+      <button id="modalLoginBtn" class="modal-btn">Login</button>
+      <div class="modal-switch">Don't have an account? <a id="modalShowRegister">Sign up</a></div>
+    </div>
+    <div id="modalRegisterForm" style="display: none;">
+      <h3>📝 Register</h3>
+      <input type="text" id="modalRegName" class="modal-input" placeholder="Full Name">
+      <input type="email" id="modalRegEmail" class="modal-input" placeholder="Email">
+      <input type="password" id="modalRegPassword" class="modal-input" placeholder="Password">
+      <button id="modalRegisterBtn" class="modal-btn">Create Account</button>
+      <div class="modal-switch">Already have an account? <a id="modalShowLogin">Login</a></div>
+    </div>
+    <div id="modalMessage" class="modal-message"></div>
+  </div>
+</div>
+
 <script>
+  // ============================================
+  // USER AUTH SYSTEM (localStorage)
+  // ============================================
+  
+  let currentUser = JSON.parse(localStorage.getItem('mcia_user')) || null;
+  
+  // Update UI based on login state
+  function updateUIAfterLogin() {
+    // Update Profile Page
+    if (currentUser) {
+      document.getElementById('profileName').textContent = currentUser.name;
+      document.getElementById('profileEmail').textContent = currentUser.email;
+      document.getElementById('profileStatus').innerHTML = '🌟 Logged In';
+      document.getElementById('profileStatus').style.color = '#2d6a4f';
+      document.getElementById('profilePoints').textContent = currentUser.points || 5280;
+      document.getElementById('savedPassengers').textContent = `${currentUser.name}`;
+      document.getElementById('logoutBtn').style.display = 'block';
+      document.getElementById('profileAvatar').textContent = '👤';
+      
+      // Show Ticket on My Trip Page
+      const ticketCard = document.getElementById('ticketCard');
+      const loginPrompt = document.getElementById('loginPrompt');
+      if (ticketCard && loginPrompt) {
+        ticketCard.classList.add('show');
+        loginPrompt.style.display = 'none';
+      }
+    } else {
+      document.getElementById('profileName').textContent = 'Guest User';
+      document.getElementById('profileEmail').textContent = 'Not logged in';
+      document.getElementById('profileStatus').innerHTML = '🔓 Guest Mode';
+      document.getElementById('profileStatus').style.color = '#f5a623';
+      document.getElementById('profilePoints').textContent = '0';
+      document.getElementById('savedPassengers').textContent = 'None (Login to save)';
+      document.getElementById('logoutBtn').style.display = 'none';
+      document.getElementById('profileAvatar').textContent = '👤';
+      
+      // Hide Ticket on My Trip Page
+      const ticketCard = document.getElementById('ticketCard');
+      const loginPrompt = document.getElementById('loginPrompt');
+      if (ticketCard && loginPrompt) {
+        ticketCard.classList.remove('show');
+        loginPrompt.style.display = 'block';
+      }
+    }
+  }
+  
+  function showModalMessage(text, type) {
+    const msgDiv = document.getElementById('modalMessage');
+    msgDiv.textContent = text;
+    msgDiv.className = `modal-message ${type}`;
+    setTimeout(() => {
+      msgDiv.className = 'modal-message';
+    }, 3000);
+  }
+  
+  function openAuthModal() {
+    document.getElementById('authModal').classList.add('active');
+    document.getElementById('modalLoginForm').style.display = 'block';
+    document.getElementById('modalRegisterForm').style.display = 'none';
+    document.getElementById('modalMessage').className = 'modal-message';
+    document.getElementById('modalLoginEmail').value = '';
+    document.getElementById('modalLoginPassword').value = '';
+  }
+  
+  // Auto-open modal when Profile page is accessed and not logged in
+  let profilePageOpened = false;
+  
+  function switchPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+    document.getElementById(`${pageId}Page`).classList.add('active-page');
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      nav.classList.remove('active');
+      if (nav.getAttribute('data-page') === pageId) nav.classList.add('active');
+    });
+    updateAdsVisibility(pageId);
+    
+    // Auto-open login modal if Profile page and not logged in
+    if (pageId === 'profile' && !currentUser) {
+      openAuthModal();
+    }
+  }
+  
+  // Close modal when clicking outside
+  document.getElementById('authModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('authModal')) {
+      document.getElementById('authModal').classList.remove('active');
+    }
+  });
+  
+  // Switch to register form
+  document.getElementById('modalShowRegister').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('modalLoginForm').style.display = 'none';
+    document.getElementById('modalRegisterForm').style.display = 'block';
+    document.getElementById('modalMessage').className = 'modal-message';
+  });
+  
+  // Switch to login form
+  document.getElementById('modalShowLogin').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('modalRegisterForm').style.display = 'none';
+    document.getElementById('modalLoginForm').style.display = 'block';
+    document.getElementById('modalMessage').className = 'modal-message';
+  });
+  
+  // Register user
+  document.getElementById('modalRegisterBtn').addEventListener('click', () => {
+    const name = document.getElementById('modalRegName').value;
+    const email = document.getElementById('modalRegEmail').value;
+    const password = document.getElementById('modalRegPassword').value;
+    
+    if (!name || !email || !password) {
+      showModalMessage('Please fill in all fields', 'error');
+      return;
+    }
+    
+    let users = JSON.parse(localStorage.getItem('mcia_users')) || [];
+    
+    if (users.find(u => u.email === email)) {
+      showModalMessage('Email already registered!', 'error');
+      return;
+    }
+    
+    const newUser = {
+      id: Date.now(),
+      name: name,
+      email: email,
+      password: btoa(password),
+      points: 5280,
+      createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('mcia_users', JSON.stringify(users));
+    
+    currentUser = {
+      uid: newUser.id,
+      name: name,
+      email: email,
+      points: 5280
+    };
+    localStorage.setItem('mcia_user', JSON.stringify(currentUser));
+    
+    showModalMessage('Account created successfully!', 'success');
+    setTimeout(() => {
+      document.getElementById('authModal').classList.remove('active');
+      updateUIAfterLogin();
+    }, 1500);
+  });
+  
+  // Login user
+  document.getElementById('modalLoginBtn').addEventListener('click', () => {
+    const email = document.getElementById('modalLoginEmail').value;
+    const password = document.getElementById('modalLoginPassword').value;
+    
+    if (!email || !password) {
+      showModalMessage('Please enter email and password', 'error');
+      return;
+    }
+    
+    let users = JSON.parse(localStorage.getItem('mcia_users')) || [];
+    const user = users.find(u => u.email === email && u.password === btoa(password));
+    
+    if (user) {
+      currentUser = {
+        uid: user.id,
+        name: user.name,
+        email: user.email,
+        points: user.points
+      };
+      localStorage.setItem('mcia_user', JSON.stringify(currentUser));
+      showModalMessage(`Welcome back, ${user.name}!`, 'success');
+      setTimeout(() => {
+        document.getElementById('authModal').classList.remove('active');
+        updateUIAfterLogin();
+      }, 1500);
+    } else {
+      showModalMessage('Invalid email or password', 'error');
+    }
+  });
+  
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    currentUser = null;
+    localStorage.removeItem('mcia_user');
+    updateUIAfterLogin();
+    const msgDiv = document.getElementById('navMessage');
+    if (msgDiv) {
+      msgDiv.innerHTML = "🔓 You have been logged out.";
+      msgDiv.style.display = "block";
+      setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
+    }
+  });
+  
+  // Prompt login button on My Trip page
+  document.getElementById('promptLoginBtn')?.addEventListener('click', () => {
+    openAuthModal();
+  });
+  
+  // Hide ads on non-home pages
   const adsHeader = document.getElementById('adsHeader');
   
   function updateAdsVisibility(pageId) {
@@ -803,7 +1145,8 @@
       adsHeader.style.display = 'none';
     }
   }
-
+  
+  // Flight data
   const departures = [
     { airline: "Cebu Pacific", code: "5J 584", destination: "Manila (MNL)", time: "14:25", status: "On Time", gate: "B3", icon: "✈️" },
     { airline: "Philippine Airlines", code: "PR 2860", destination: "Manila (MNL)", time: "15:10", status: "Boarding", gate: "A5", icon: "🛩️" },
@@ -811,7 +1154,7 @@
     { airline: "Cebu Pacific", code: "5J 586", destination: "Tokyo (NRT)", time: "17:30", status: "Delayed", gate: "B4", icon: "✈️" },
     { airline: "Singapore Airlines", code: "SQ 921", destination: "Singapore (SIN)", time: "18:45", status: "On Time", gate: "D1", icon: "🌟" }
   ];
-
+  
   const arrivals = [
     { airline: "Cebu Pacific", code: "5J 583", from: "Manila (MNL)", time: "13:45", status: "Arrived", gate: "B3", icon: "✈️" },
     { airline: "Philippine Airlines", code: "PR 2859", from: "Manila (MNL)", time: "14:30", status: "On Time", gate: "A5", icon: "🛩️" },
@@ -819,9 +1162,9 @@
     { airline: "Cebu Pacific", code: "5J 585", from: "Tokyo (NRT)", time: "16:45", status: "Delayed", gate: "B4", icon: "✈️" },
     { airline: "Singapore Airlines", code: "SQ 920", from: "Singapore (SIN)", time: "18:00", status: "On Time", gate: "D1", icon: "🌟" }
   ];
-
+  
   let currentFlightType = "departures";
-
+  
   function getStatusClass(status) {
     switch(status) {
       case "On Time": return "on-time";
@@ -831,7 +1174,7 @@
       default: return "on-time";
     }
   }
-
+  
   function renderFlights() {
     const container = document.getElementById('flightList');
     const flights = currentFlightType === "departures" ? departures : arrivals;
@@ -866,7 +1209,7 @@
       container.appendChild(flightItem);
     });
   }
-
+  
   document.querySelectorAll('.type-option').forEach(option => {
     option.addEventListener('click', () => {
       document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
@@ -875,15 +1218,16 @@
       renderFlights();
     });
   });
-
+  
   renderFlights();
-
+  
+  // ADS CAROUSEL
   const carousel = document.getElementById('adsCarousel');
   const dotsContainer = document.getElementById('adDots');
   let adCards = [];
   let currentIndex = 0;
   let autoScrollInterval;
-
+  
   if (carousel && dotsContainer) {
     adCards = document.querySelectorAll('.ad-card');
     adCards.forEach((_, index) => {
@@ -931,7 +1275,8 @@
       }
     });
   }
-
+  
+  // SEARCH
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -944,23 +1289,15 @@
       searchInput.value = '';
     }
   });
-
-  function switchPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
-    document.getElementById(`${pageId}Page`).classList.add('active-page');
-    document.querySelectorAll('.nav-item').forEach(nav => {
-      nav.classList.remove('active');
-      if (nav.getAttribute('data-page') === pageId) nav.classList.add('active');
-    });
-    updateAdsVisibility(pageId);
-  }
   
+  // PAGE NAVIGATION
   document.querySelectorAll('.nav-item').forEach(nav => {
     nav.addEventListener('click', () => {
       switchPage(nav.getAttribute('data-page'));
     });
   });
-
+  
+  // CARD CLICK HANDLERS
   document.querySelectorAll('.attraction-card, .shop-card').forEach(item => {
     item.addEventListener('click', () => {
       const msg = item.getAttribute('data-msg') || "📍 More info would appear here.";
@@ -984,7 +1321,8 @@
       }
     });
   });
-
+  
+  // GATE CHANGE ALERT
   let gateChanged = false;
   setTimeout(() => {
     if (!gateChanged) {
@@ -1009,8 +1347,9 @@
       if (flightCard) flightCard.style.background = "linear-gradient(135deg, #9e2d2f, #c73e3e)";
     }
   }, 10000);
-
+  
   window.addEventListener('load', () => {
+    updateUIAfterLogin();
     const msgDiv = document.getElementById('navMessage');
     if (msgDiv) {
       setTimeout(() => {
