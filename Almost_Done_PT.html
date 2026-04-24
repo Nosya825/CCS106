@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a2540">
+  <title>MCIA Flow — Mactan-Cebu Airport</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a2540;
+      --navy-mid: #0d3260;
+      --blue: #1652f0;
+      --blue-light: #e8effe;
+      --teal: #00c2a8;
+      --teal-light: #e0faf6;
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      --red: #ef4444;
+      --red-light: #fee2e2;
+      --green: #10b981;
+      --green-light: #d1fae5;
+      --surface: #f8faff;
+      --card: #ffffff;
+      --border: #e4eaf5;
+      --text-primary: #0a2540;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --shadow-sm: 0 1px 4px rgba(10,37,64,0.06);
+      --shadow-md: 0 4px 16px rgba(10,37,64,0.10);
+      --shadow-lg: 0 12px 40px rgba(10,37,64,0.16);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0a1628;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone {
+      width: 390px;
+      height: 844px;
+      background: var(--surface);
+      border-radius: 50px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Emoji image placeholders */
+    .emoji-placeholder {
+      width: 1.2em;
+      height: 1.2em;
+      display: inline-block;
+      vertical-align: middle;
+      object-fit: contain;
+    }
+
+    .status-bar {
+      background: var(--navy);
+      color: #fff;
+      padding: 14px 24px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .status-right { display: flex; gap: 6px; align-items: center; }
+
+    .app-header {
+      background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 0 20px 16px;
+      flex-shrink: 0;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+    }
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--teal);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: -2px; }
+
+    .header-actions { display: flex; gap: 10px; }
+    .icon-btn {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .icon-btn:active { background: rgba(255,255,255,0.2); }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+      backdrop-filter: blur(6px);
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.45); }
+    .search-input:focus { background: rgba(255,255,255,0.16); border-color: var(--teal); }
+
+    .ad-strip { flex-shrink: 0; position: relative; overflow: hidden; height: 130px; }
+    .ad-track {
+      display: flex;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .ad-track::-webkit-scrollbar { display: none; }
+    .ad-slide {
+      min-width: 100%;
+      height: 130px;
+      scroll-snap-align: start;
+      position: relative;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .ad-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.65);
+    }
+    .ad-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 10px 16px;
+      background: linear-gradient(to top, rgba(10,37,64,0.8) 0%, transparent 100%);
+    }
+    .ad-label { color: white; font-size: 13px; font-weight: 600; }
+    .ad-sub { color: rgba(255,255,255,0.7); font-size: 11px; }
+    .ad-dots {
+      position: absolute;
+      bottom: 10px; right: 14px;
+      display: flex; gap: 5px;
+      z-index: 5;
+    }
+    .dot {
+      height: 5px; width: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      transition: all 0.3s;
+    }
+    .dot.active { width: 16px; border-radius: 4px; background: white; }
+
+    .scroll-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--surface);
+      border-radius: 28px 28px 0 0;
+      margin-top: 6px;
+      padding-bottom: 24px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scroll-body::-webkit-scrollbar { display: none; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 20px 20px 10px;
+    }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .section-link { font-size: 12px; color: var(--blue); font-weight: 600; cursor: pointer; }
+
+    .welcome-strip {
+      margin: 18px 20px 0;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: 20px;
+      padding: 18px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .welcome-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .welcome-text p { font-size: 12px; color: rgba(255,255,255,0.65); }
+    .welcome-icon { font-size: 38px; }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 0 20px;
+    }
+    .quick-tile {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 14px 8px 12px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .quick-tile:active { transform: scale(0.95); box-shadow: var(--shadow-md); }
+    .qt-icon { font-size: 26px; margin-bottom: 6px; }
+    .qt-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); line-height: 1.2; }
+
+    .hscroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 2px 20px 12px;
+      -ms-overflow-style: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .hscroll::-webkit-scrollbar { display: block; height: 4px; }
+    .hscroll::-webkit-scrollbar-track { background: transparent; }
+    .hscroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .venue-card {
+      background: var(--card);
+      border-radius: 18px;
+      min-width: 130px;
+      padding: 16px 12px 14px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.15s;
+      flex-shrink: 0;
+    }
+    .venue-card:active { transform: scale(0.96); }
+    .venue-icon { font-size: 38px; margin-bottom: 8px; }
+    .venue-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+    .venue-sub { font-size: 10px; color: var(--text-muted); }
+
+    .alert-banner {
+      margin: 0 20px;
+      background: var(--amber-light);
+      border: 1.5px solid #fcd34d;
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; }
+    .alert-text { flex: 1; font-size: 12px; color: #92400e; line-height: 1.4; }
+    .alert-close { background: none; border: none; font-size: 16px; color: #92400e; cursor: pointer; padding: 0; }
+
+    .toast {
+      position: absolute;
+      bottom: 90px;
+      left: 20px; right: 20px;
+      background: var(--navy);
+      color: white;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 500;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; pointer-events: all; }
+
+    .ticket {
+      margin: 18px 20px 0;
+      background: linear-gradient(135deg, var(--navy) 0%, #0e3a70 50%, #0d4080 100%);
+      border-radius: 24px;
+      padding: 20px;
+      color: white;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .ticket::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .ticket::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(0,194,168,0.1);
+    }
+    .ticket-hidden { display: none; }
+    .ticket-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .ticket-flight { font-size: 28px; font-weight: 800; letter-spacing: 1px; font-family: 'DM Mono', monospace; }
+    .ticket-badge {
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--teal);
+      color: var(--navy);
+    }
+    .ticket-badge.delayed { background: var(--amber); }
+    .ticket-badge.boarding { background: #f97316; color: white; }
+    .ticket-route { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 16px; }
+    .ticket-divider {
+      border: none;
+      border-top: 1px dashed rgba(255,255,255,0.2);
+      margin: 14px 0;
+    }
+    .ticket-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    .ticket-col label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 3px; }
+    .ticket-col span { font-size: 15px; font-weight: 700; }
+
+    .login-card {
+      margin: 18px 20px 0;
+      background: var(--blue-light);
+      border-radius: 24px;
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .login-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+    .btn-primary {
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+
+    .flight-toggle {
+      display: flex;
+      margin: 16px 20px 14px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 5px;
+      border: 1.5px solid var(--border);
+      gap: 4px;
+    }
+    .ftog {
+      flex: 1;
+      text-align: center;
+      padding: 9px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ftog.active {
+      background: var(--navy);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flight-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 0 20px 10px;
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+    .flight-card:active { transform: scale(0.98); }
+    .fc-airline-icon { width: 44px; height: 44px; flex-shrink: 0; }
+    .fc-airline-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      object-fit: contain;
+      background: var(--blue-light);
+    }
+    .fc-info { flex: 1; min-width: 0; }
+    .fc-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .fc-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .fc-code { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+    .fc-route { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+    .fc-time { font-size: 12px; color: var(--teal); font-weight: 600; font-family: 'DM Mono', monospace; }
+    .fc-right { text-align: right; flex-shrink: 0; }
+    .fc-status {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .s-ontime { background: var(--green-light); color: #065f46; }
+    .s-delayed { background: var(--red-light); color: #991b1b; }
+    .s-boarding { background: var(--amber-light); color: #92400e; }
+    .s-arrived { background: var(--blue-light); color: #1e3a8a; }
+    .fc-gate { font-size: 11px; color: var(--text-muted); }
+
+    .terminal-map {
+      margin: 18px 20px 0;
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      border-radius: 24px;
+      padding: 20px;
+      color: white;
+    }
+    .map-head { font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .map-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .map-block {
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .map-block.highlight {
+      background: var(--teal);
+      color: var(--navy);
+    }
+    .map-block-icon { font-size: 18px; }
+
+    .amenity-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .amenity-row:last-child { border-bottom: none; }
+    .amenity-row:active { background: var(--blue-light); }
+    .amenity-icon { font-size: 28px; flex-shrink: 0; }
+    .amenity-info { flex: 1; }
+    .amenity-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+    .amenity-sub { font-size: 12px; color: var(--text-muted); }
+    .amenity-arrow { font-size: 14px; color: var(--text-muted); }
+
+    .scan-block {
+      margin: 16px 20px;
+      background: linear-gradient(135deg, #0d3260, #1652f0);
+      border-radius: 24px;
+      padding: 22px 20px;
+      text-align: center;
+      color: white;
+    }
+    .scan-block h4 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .scan-block p { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+    .coming-pill {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .profile-hero {
+      background: linear-gradient(160deg, var(--navy), var(--navy-mid));
+      margin: 18px 20px 0;
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      color: white;
+    }
+    .avatar-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      font-size: 38px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .profile-name { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+    .profile-email { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .profile-tag {
+      display: inline-block;
+      background: var(--teal);
+      color: var(--navy);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .profile-tag.guest { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+
+    .points-banner {
+      margin: 12px 20px 0;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border-radius: 20px;
+      padding: 18px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .points-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.85; margin-bottom: 4px; }
+    .points-val { font-size: 32px; font-weight: 800; font-family: 'DM Mono', monospace; }
+    .points-right { font-size: 30px; opacity: 0.7; }
+
+    .settings-list {
+      background: var(--card);
+      border-radius: 20px;
+      margin: 14px 20px 0;
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-row:active { background: var(--surface); }
+    .setting-icon { font-size: 22px; flex-shrink: 0; }
+    .setting-info { flex: 1; }
+    .setting-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .setting-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .setting-arrow { font-size: 12px; color: var(--text-muted); }
+
+    .logout-btn {
+      width: calc(100% - 40px);
+      margin: 16px 20px 0;
+      padding: 14px;
+      background: #fee2e2;
+      color: var(--red);
+      border: 1.5px solid #fca5a5;
+      border-radius: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: none;
+    }
+    .logout-btn:active { background: #fecaca; }
+
+    .bottom-nav {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 10px 18px;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 16px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .nav-item.active { color: var(--navy); background: var(--blue-light); }
+    .nav-icon { font-size: 22px; display: block; }
+
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,37,64,0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: flex-end;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .modal-overlay.active { visibility: visible; opacity: 1; }
+
+    .modal-sheet {
+      background: white;
+      width: 100%;
+      border-radius: 28px 28px 0 0;
+      padding: 24px 24px 36px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.32,0.72,0,1);
+    }
+    .modal-overlay.active .modal-sheet { transform: translateY(0); }
+
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      margin: 0 auto 20px;
+    }
+    .modal-title { font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; text-align: center; }
+
+    .modal-input {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: var(--blue); }
+
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: opacity 0.2s;
+    }
+    .modal-btn:active { opacity: 0.85; }
+
+    .modal-switch { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); }
+    .modal-switch a { color: var(--blue); font-weight: 700; cursor: pointer; text-decoration: none; }
+
+    .modal-msg {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+    .modal-msg.err { display: block; background: var(--red-light); color: #991b1b; }
+    .modal-msg.ok { display: block; background: var(--green-light); color: #065f46; }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="status-bar">
+    <span>9:41</span>
+    <div class="status-right">
+      <span><img src="https://picsum.photos/12/12?random=sig1" class="emoji-placeholder" alt="signal"></span>
+      <span><img src="https://picsum.photos/12/12?random=batt" class="emoji-placeholder" alt="battery"></span>
+      <span>94%</span>
+    </div>
+  </div>
+
+  <div class="app-header">
+    <div class="header-top">
+      <div class="header-logo">
+        <div class="logo-mark">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Mactan_Cebu_Inter_Airport_logo.svg" class="emoji-placeholder" alt="airplane">
+        </div>
+        <div>
+          <div class="logo-text">MCIA Flow</div>
+          <div class="logo-sub">Mactan-Cebu International</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn">
+          <img src="bell.png" class="emoji-placeholder" alt="bell">
+        </button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">
+        <img src="search.png" class="emoji-placeholder" alt="search">
+      </span>
+      <input class="search-input" id="searchInput" type="text" placeholder="Search flights, shops, gates…">
+    </div>
+  </div>
+
+  <div class="ad-strip" id="adStrip">
+    <div class="ad-track" id="adTrack">
+      <a href="https://www.cebupacificair.com" target="_blank" class="ad-slide" rel="noopener">
+        <img src="https://airinsight.com/wp-content/uploads/2021/11/A321neo-ACF-PW-Cebu-Pacific-scaled.jpg" alt="Cebu Pacific">
+        <div class="ad-overlay"><div class="ad-label">Cebu Pacific</div><div class="ad-sub">Book your next flight →</div></div>
+      </a>
+      <a href="https://www.jollibee.com.ph/" target="_blank" class="ad-slide" rel="noopener">
+        <img src="https://tb-static.uber.com/prod/image-proc/processed_images/8f42f63e1c758c8f3536eb459b5277bc/5283d81c664b43c5f57a3a186d273063.jpeg" alt="Jollibee">
+        <div class="ad-overlay"><div class="ad-label">Jollibee at MCIA</div><div class="ad-sub">Chickenjoy inside the terminal</div></div>
+      </a>
+      <a href="https://delicacies.ph" target="_blank" class="ad-slide" rel="noopener">
+        <img src="https://delicacies.ph/wp-content/uploads/2023/01/Dried-Mango.webp" alt="Dried Mango">
+        <div class="ad-overlay"><div class="ad-label">Pasalubong Center</div><div class="ad-sub">Cebu's famous dried mangoes</div></div>
+      </a>
+      <a href="https://www.pagss.com.ph/" target="_blank" class="ad-slide" rel="noopener">
+        <img src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=600&h=240&fit=crop" alt="Lounge">
+        <div class="ad-overlay"><div class="ad-label">PAGSS Premier Lounge</div><div class="ad-sub">Relax before your flight</div></div>
+      </a>
+    </div>
+    <div class="ad-dots" id="adDots"></div>
+  </div>
+
+  <div class="scroll-body">
+
+    <div class="page active" id="homePage">
+      <div class="welcome-strip">
+        <div class="welcome-text">
+          <h3>Welcome to MCIA! </h3>
+          <p>Your smart airport companion</p>
+        </div>
+        <div class="welcome-icon">
+          <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAGhXSctX1jn6DkwoC2buJqU0STToeMaH8CEcjO4kDVv95Fw2N_uYHvktmiIM3biAitsG1WSjgKPVXUjfu9YWuynHPzZpnwiMKa53_Qp5LjMkMEstLvQUofPGExGqU_0MYZb5h-JR5hGQMY=s680-w680-h510-rw" class="emoji-placeholder" alt="Philippines flag">
+        </div>
+      </div>
+
+      <div class="section-head" style="padding-top:18px;">
+        <span class="section-title">Quick Access</span>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-tile" data-toast="✈️ Flights board loaded — check My Trip tab!" data-nav="trip">
+          <div class="qt-icon"><img src="https://images.vexels.com/media/users/3/242810/isolated/preview/faf4f5ad02d6d68cfeafa44e1b57649a-plane-semi-flat.png" class="emoji-placeholder" alt="flights"></div>
+          <div class="qt-label">Flights</div>
+        </div>
+        <div class="quick-tile" data-toast="📍 Opening airport map…" data-nav="map">
+          <div class="qt-icon"><img src="—Pngtree—google maps icon_3573680.png" class="emoji-placeholder" alt="map"></div>
+          <div class="qt-label">Terminal Map</div>
+        </div>
+        <div class="quick-tile" data-toast="🛂 Immigration queue: Low wait time (~5 min)" data-nav="">
+          <div class="qt-icon"><img src="immigration.png" class="emoji-placeholder" alt="immigration"></div>
+          <div class="qt-label">Immigra-tion</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-title">Services & Amenities</span>
+      </div>
+      <div class="hscroll">
+        <div class="venue-card" data-toast="🏨 Waterfront Airport Hotel: 2 min from terminal. Layover day rooms available.">
+          <div class="venue-icon"><img src="hotel.png" class="emoji-placeholder" alt="hotel"></div>
+          <div class="venue-name">Waterfront</div>
+          <div class="venue-sub">Connected hotel</div>
+        </div>
+        <div class="venue-card" data-toast="🚐 Free shuttle every 15 min between T1 & T2.">
+          <div class="venue-icon"><img src="shuttle-service.png" class="emoji-placeholder" alt="shuttle"></div>
+          <div class="venue-name">Shuttle</div>
+          <div class="venue-sub">T1 ↔ T2 Free</div>
+        </div>
+        <div class="venue-card" data-toast="🏧 ATM: Available at Level 1 near arrival area and Level 2 departure hall. BancNet & Visa accepted.">
+          <div class="venue-icon">🏧</div>
+          <div class="venue-name">ATM</div>
+          <div class="venue-sub">Level 1 & 2</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-title">Dining</span>
+      </div>
+      <div class="hscroll">
+        <div class="venue-card" data-toast="🍗 Jollibee: Chickenjoy, Jolly Spaghetti & Peach Mango Pie. Gate B Level 2.">
+          <div class="venue-icon"><img src="pngegg (1).png" class="emoji-placeholder" alt="Jollibee"></div>
+          <div class="venue-name">Jollibee</div>
+          <div class="venue-sub">Filipino fast food</div>
+        </div>
+        <div class="venue-card" data-toast="🍜 Mang Inasal: Chicken Inasal + unlimited rice. Near arrival area.">
+          <div class="venue-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSit-75iKzKaXVMg3M1be9djxE6C6-Ah5zu7A&s" class="emoji-placeholder" alt="Mang Inasal"></div>
+          <div class="venue-name">Mang Inasal</div>
+          <div class="venue-sub">Grilled chicken</div>
+        </div>
+        <div class="venue-card" data-toast="☕ Bo's Coffee: Premium Philippine coffee. Try their Cebu blend!">
+          <div class="venue-icon"><img src="https://upload.wikimedia.org/wikipedia/en/3/3f/Bo%27s_Coffee_logo.png" class="emoji-placeholder" alt="coffee"></div>
+          <div class="venue-name">Bo's Coffee</div>
+          <div class="venue-sub">Local coffee</div>
+        </div>
+        <div class="venue-card" data-toast="🥩 FoodCourt: Authentic crispy lechon stall near Departure Hall.">
+          <div class="venue-icon"><img src="canteen.png" class="emoji-placeholder" alt="lechon"></div>
+          <div class="venue-name">Food Court</div>
+          <div class="venue-sub">Local Food</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-title">Shopping</span>
+      </div>
+      <div class="hscroll" style="margin-bottom:4px;">
+        <div class="venue-card" data-toast="🥭 Pasalubong Center: Dried mangoes, otap, rosquillos & more. Ground floor.">
+          <div class="venue-icon"><img src="https://picsum.photos/38/38?random=mango" class="emoji-placeholder" alt="mango"></div>
+          <div class="venue-name">Pasalubong</div>
+          <div class="venue-sub">Souvenirs & gifts</div>
+        </div>
+        <div class="venue-card" data-toast="🛍️ Duty Free: Tax-free perfumes, chocolates & liquor. International departures.">
+          <div class="venue-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc7BXQLokJr-vBuVawY7wi2MoJm09_4KEoaw&s" class="emoji-placeholder" alt="duty free"></div>
+          <div class="venue-name">Duty Free</div>
+          <div class="venue-sub">Tax-free shopping</div>
+        </div>
+        <div class="venue-card" data-toast="🧴 Bench: Filipino clothing, fragrances & accessories. Level 2.">
+          <div class="venue-icon"><img src="https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/if_w_gt_300,w_300/global_wc26_wc_store_multifed_football_ss26_launch_wc_store_category_image_11_t_3b1211569d.jpg" class="emoji-placeholder" alt="bench"></div>
+          <div class="venue-name">Addidas</div>
+          <div class="venue-sub">Clothing & gifts</div>
+        </div>
+      </div>
+      <div id="homeAlertArea" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="page" id="tripPage">
+      <div id="ticketCard" class="ticket ticket-hidden">
+        <div class="ticket-top">
+          <span class="ticket-flight" id="tFlightCode">5J 584</span>
+          <span class="ticket-badge" id="tBadge">On Time</span>
+        </div>
+        <div class="ticket-route" id="tRoute"><img src="flight-ticket.png" class="emoji-placeholder" alt="airplane"> Mactan-Cebu (CEB) → Manila (MNL)</div>
+        <hr class="ticket-divider">
+        <div class="ticket-row">
+          <div class="ticket-col"><label>Departure</label><span id="tTime">14:25</span></div>
+          <div class="ticket-col"><label>Gate</label><span id="tGate">B3</span></div>
+          <div class="ticket-col"><label>Seat</label><span>4C</span></div>
+        </div>
+        <div style="margin-top:12px; font-size:12px; color:rgba(255,255,255,0.6);"> Check-in Row 4 &nbsp;|&nbsp;  Bag Drop A2</div>
+      </div>
+
+      <div id="loginCard" class="login-card">
+        <p><img src="https://picsum.photos/14/14?random=lock" class="emoji-placeholder" alt="lock"> Log in to view your boarding pass & saved trips</p>
+        <button class="btn-primary" id="promptLoginBtn">Login / Register</button>
+      </div>
+
+      <div class="flight-toggle">
+        <div class="ftog active" data-type="departures"><img src="departures.png" class="emoji-placeholder" alt="departures"> Departures</div>
+        <div class="ftog" data-type="arrivals"><img src="arrivals.png" class="emoji-placeholder" alt="arrivals"> Arrivals</div>
+      </div>
+      <div id="flightList"></div>
+    </div>
+
+    <div class="page" id="mapPage">
+      <div class="terminal-map">
+        <div class="map-head">
+          <span>Terminal Overview</span>
+        </div>
+        <div class="map-sub">Mactan-Cebu International Airport</div>
+        <div class="map-grid">
+          <div class="map-block highlight">
+            <span class="map-block-icon"><img src="https://picsum.photos/18/18?random=loc" class="emoji-placeholder" alt="location"></span>
+            <span>T2 (You are here)</span>
+          </div>
+          <div class="map-block">
+            <span class="map-block-icon"><img src="https://picsum.photos/18/18?random=loc2" class="emoji-placeholder" alt="location"></span>
+            <span>Terminal 1</span>
+          </div>
+          <div class="map-block">
+            <span class="map-block-icon">🏧</span>
+            <span>ATM (Level 1 & 2)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head"><span class="section-title">Nearby Amenities</span></div>
+
+      <div class="amenity-row" data-toast="🚻 Restroom: 2 min walk. Turn left after Gate B3.">
+        <div class="amenity-icon"><img src="toilet.png" class="emoji-placeholder" alt="restroom"></div>
+        <div class="amenity-info"><div class="amenity-name">Restroom</div><div class="amenity-sub">2 min walk · Gate B3</div></div>
+        <span class="amenity-arrow">›</span>
+      </div>
+      <div class="amenity-row" data-toast="🏧 ATM: Level 1 near arrival area and Level 2 departure hall.">
+        <div class="amenity-icon">🏧</div>
+        <div class="amenity-info"><div class="amenity-name">ATM</div><div class="amenity-sub">Levels 1 & 2 </div></div>
+        <span class="amenity-arrow">›</span>
+      </div>
+      <div class="amenity-row" data-toast="🔌 Charging Stations: 1 min walk. Near Gate B3 seating area.">
+        <div class="amenity-icon"><img src="charging-point.png" class="emoji-placeholder" alt="charging"></div>
+        <div class="amenity-info"><div class="amenity-name">Charging Stations</div><div class="amenity-sub">1 min walk · Gate B3</div></div>
+        <span class="amenity-arrow">›</span>
+      </div>
+      <div class="amenity-row" data-toast="🚐 Terminal Shuttle: Departs every 15 min outside Arrivals.">
+        <div class="amenity-icon"><img src="shuttle-service.png" class="emoji-placeholder" alt="shuttle"></div>
+        <div class="amenity-info"><div class="amenity-name">Terminal Shuttle</div><div class="amenity-sub">Free · T1 ↔ T2· Outside the terminal</div></div>
+        <span class="amenity-arrow">›</span>
+      </div>
+      <div class="amenity-row" data-toast="🍽️ Food Court: 4 min walk. Jollibee, Mang Inasal, Bo's Coffee & more.">
+        <div class="amenity-icon"><img src="canteen.png" class="emoji-placeholder" alt="food court"></div>
+        <div class="amenity-info"><div class="amenity-name">Food Court</div><div class="amenity-sub">4 min walk · Level 2</div></div>
+        <span class="amenity-arrow">›</span>
+      </div>
+
+      <div class="scan-block">
+        <div style="font-size:42px; margin-bottom:10px;"><img src="scanner.png" class="emoji-placeholder" alt="qr"></div>
+        <h4>Scan & Pay</h4>
+        <p>QR code payments for shops &amp; dining coming soon</p>
+        <span class="coming-pill"> Coming Soon</span>
+      </div>
+    </div>
+
+    <div class="page" id="profilePage">
+      <div class="profile-hero">
+        <div class="avatar-circle" id="profileAvatar"><img src="user.png" class="emoji-placeholder" alt="avatar"></div>
+        <div class="profile-name" id="profileName">Guest User</div>
+        <div class="profile-email" id="profileEmail">Not logged in</div>
+        <span class="profile-tag guest" id="profileTag"><img src="user.png" class="emoji-placeholder" alt="lock"> Guest Mode</span>
+      </div>
+
+      <div class="points-banner">
+        <div>
+          <div class="points-label"><img src="https://picsum.photos/12/12?random=star" class="emoji-placeholder" alt="star"> GetGo Points</div>
+          <div class="points-val" id="profilePoints">0</div>
+          <div style="font-size:11px; opacity:0.8;">Login to earn rewards!</div>
+        </div>
+        <div class="points-right"><img src="https://picsum.photos/30/30?random=medal" class="emoji-placeholder" alt="medal"></div>
+      </div>
+
+      <div class="section-head"><span class="section-title"> Preferences</span></div>
+      <div class="settings-list">
+        <div class="setting-row" data-toast="🔔 Push notifications enabled for gate changes & boarding alerts.">
+          <span class="setting-icon"><img src="bell.png" class="emoji-placeholder" alt="bell"></span>
+          <div class="setting-info"><div class="setting-name">Notifications</div><div class="setting-sub">Gates & boarding alerts enabled</div></div>
+          <span class="setting-arrow">✓</span>
+        </div>
+        <div class="setting-row" data-toast="🌍 Language set to English / Filipino.">
+          <span class="setting-icon"><img src="language.png" class="emoji-placeholder" alt="globe"></span>
+          <div class="setting-info"><div class="setting-name">Language</div><div class="setting-sub">English / Filipino</div></div>
+          <span class="setting-arrow">›</span>
+        </div>
+        <div class="setting-row" data-toast="🎫 Saved passengers — login to manage.">
+          <span class="setting-icon"><img src="flight-ticket.png" class="emoji-placeholder" alt="ticket"></span>
+          <div class="setting-info"><div class="setting-name">Saved Passengers</div><div class="setting-sub" id="savedPassengers">None — login to save</div></div>
+          <span class="setting-arrow">›</span>
+        </div>
+        <div class="setting-row" data-toast="♿ Accessibility features & special assistance.">
+          <span class="setting-icon"><img src="toilet (1).png" class="emoji-placeholder" alt="wheelchair"></span>
+          <div class="setting-info"><div class="setting-name">Accessibility</div><div class="setting-sub">Special assistance</div></div>
+          <span class="setting-arrow">›</span>
+        </div>
+      </div>
+
+      <button class="logout-btn" id="logoutBtn"><img src="https://picsum.photos/14/14?random=logout" class="emoji-placeholder" alt="logout"> Logout</button>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" data-page="home"><span class="nav-icon"><img src="home.png" class="emoji-placeholder" alt="home"></span>Home</div>
+    <div class="nav-item" data-page="trip"><span class="nav-icon"><img src="https://images.vexels.com/media/users/3/242810/isolated/preview/faf4f5ad02d6d68cfeafa44e1b57649a-plane-semi-flat.png" class="emoji-placeholder" alt="depart"></span>My Trip</div>
+    <div class="nav-item" data-page="map"><span class="nav-icon"><img src="https://picsum.photos/22/22?random=map3" class="emoji-placeholder" alt="map"></span>Map</div>
+    <div class="nav-item" data-page="profile"><span class="nav-icon"><img src="user.png" class="emoji-placeholder" alt="user"></span>Profile</div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+
+    <div id="loginForm">
+      <div class="modal-title"><img src="https://picsum.photos/22/22?random=wave" class="emoji-placeholder" alt="wave"> Welcome back</div>
+      <input type="email" class="modal-input" id="loginEmail" placeholder="Email address">
+      <input type="password" class="modal-input" id="loginPass" placeholder="Password">
+      <button class="modal-btn" id="loginSubmitBtn">Log In</button>
+      <div class="modal-switch">No account? <a id="showRegister">Sign up free</a></div>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <div class="modal-title"><img src="https://picsum.photos/22/22?random=sparkle" class="emoji-placeholder" alt="sparkle"> Create account</div>
+      <input type="text" class="modal-input" id="regName" placeholder="Full name">
+      <input type="email" class="modal-input" id="regEmail" placeholder="Email address">
+      <input type="password" class="modal-input" id="regPass" placeholder="Password (min. 6 chars)">
+      <button class="modal-btn" id="registerSubmitBtn">Create Account</button>
+      <div class="modal-switch">Already have an account? <a id="showLogin">Log in</a></div>
+    </div>
+
+    <div class="modal-msg" id="modalMsg"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let currentUser = JSON.parse(localStorage.getItem('mcia_user')) || null;
+let currentPage = 'home';
+let toastTimer = null;
+
+// ─────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────
+function showToast(msg, duration = 4000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ─────────────────────────────────────────
+// PAGE NAVIGATION
+// ─────────────────────────────────────────
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`${page}Page`).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+  document.getElementById('adStrip').style.display = page === 'home' ? 'block' : 'none';
+  currentPage = page;
+  if (page === 'profile' && !currentUser) openModal();
+}
+
+document.querySelectorAll('.nav-item').forEach(n => {
+  n.addEventListener('click', () => goTo(n.dataset.page));
+});
+
+// Updated Quick tiles (flights + map + immigration)
+document.querySelectorAll('.quick-tile').forEach(t => {
+  t.addEventListener('click', () => {
+    showToast(t.dataset.toast);
+    if (t.dataset.nav) goTo(t.dataset.nav);
+  });
+});
+
+// VENUE / AMENITY CARDS
+document.querySelectorAll('[data-toast]').forEach(el => {
+  if (el.classList.contains('quick-tile')) return;
+  el.addEventListener('click', () => showToast(el.dataset.toast));
+});
+
+// SEARCH
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && searchInput.value.trim()) {
+    showToast(`🔍 Searching "${searchInput.value.trim()}" at MCIA…`);
+    searchInput.value = '';
+    searchInput.blur();
+  }
+});
+
+// FLIGHT DATA
+const flights = {
+  departures: [
+    { airline: "Cebu Pacific", code: "5J 584", dest: "Manila (MNL)", time: "14:25", status: "On Time", gate: "B3", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4GkKQFKKCTLUwtKbKpq3lhs5JP0y-q1KLVA&s" },
+    { airline: "Philippine Airlines", code: "PR 2860", dest: "Manila (MNL)", time: "15:10", status: "Boarding", gate: "A5", logo: "https://i.pinimg.com/736x/b1/5f/ce/b15fce1bc8019ff350625416ae627f40.jpg" },
+    { airline: "AirAsia", code: "Z2 771", dest: "Clark (CRK)", time: "16:00", status: "On Time", gate: "C2", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_New_Logo.svg/960px-AirAsia_New_Logo.svg.png" },
+    { airline: "Cebu Pacific", code: "5J 586", dest: "Tokyo (NRT)", time: "17:30", status: "Delayed", gate: "B4", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4GkKQFKKCTLUwtKbKpq3lhs5JP0y-q1KLVA&s" },
+    { airline: "Singapore Airlines", code: "SQ 921", dest: "Singapore (SIN)", time: "18:45", status: "On Time", gate: "D1", logo: "https://cdn.prod.website-files.com/659a9ef71c962485037fcc8f/666827c920e71571abfd6ee3_AD_4nXesSyUAIiEnrdE0U5ZaE9iuyPzacBZWgqpCgYirPfB-r6iz6M-et5usym3Hl1CTxC9QfTUqaUj41ljYAydz9x54B6QzKa-9I-30dT8TOJA7D3dNEyyVWHPTcqB8a2dnqzQbvN0zXd2lVk7V8qlogwYXibgr.jpeg" }
+  ],
+  arrivals: [
+    { airline: "Cebu Pacific", code: "5J 583", dest: "Manila (MNL)", time: "13:45", status: "Arrived", gate: "B3", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4GkKQFKKCTLUwtKbKpq3lhs5JP0y-q1KLVA&s" },
+    { airline: "Philippine Airlines", code: "PR 2859", dest: "Manila (MNL)", time: "14:30", status: "On Time", gate: "A5", logo: "https://i.pinimg.com/736x/b1/5f/ce/b15fce1bc8019ff350625416ae627f40.jpg" },
+    { airline: "AirAsia", code: "Z2 770", dest: "Clark (CRK)", time: "15:20", status: "On Time", gate: "C2", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/AirAsia_New_Logo.svg/960px-AirAsia_New_Logo.svg.png" },
+    { airline: "Cebu Pacific", code: "5J 585", dest: "Tokyo (NRT)", time: "16:45", status: "Delayed", gate: "B4", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4GkKQFKKCTLUwtKbKpq3lhs5JP0y-q1KLVA&s" },
+    { airline: "Singapore Airlines", code: "SQ 920", dest: "Singapore (SIN)", time: "18:00", status: "On Time", gate: "D1", logo: "https://cdn.prod.website-files.com/659a9ef71c962485037fcc8f/666827c920e71571abfd6ee3_AD_4nXesSyUAIiEnrdE0U5ZaE9iuyPzacBZWgqpCgYirPfB-r6iz6M-et5usym3Hl1CTxC9QfTUqaUj41ljYAydz9x54B6QzKa-9I-30dT8TOJA7D3dNEyyVWHPTcqB8a2dnqzQbvN0zXd2lVk7V8qlogwYXibgr.jpeg" }
+  ]
+};
+
+let flightMode = 'departures';
+
+function statusClass(s) {
+  return { 'On Time': 's-ontime', 'Delayed': 's-delayed', 'Boarding': 's-boarding', 'Arrived': 's-arrived' }[s] || 's-ontime';
+}
+
+function renderFlights() {
+  const list = document.getElementById('flightList');
+  const dir = flightMode === 'departures';
+  list.innerHTML = flights[flightMode].map(f => `
+    <div class="flight-card">
+      <div class="fc-airline-icon">
+        <img class="fc-airline-img" src="${f.logo}" alt="${f.airline}" onerror="this.src='https://placehold.co/44x44/e4eaf5/64748b?text=✈️'">
+      </div>
+      <div class="fc-info">
+        <div class="fc-top">
+          <span class="fc-name">${f.airline}</span>
+          <span class="fc-code">${f.code}</span>
+        </div>
+        <div class="fc-route">${dir ? '→' : '←'} ${f.dest}</div>
+        <div class="fc-time">🕒 ${f.time}</div>
+      </div>
+      <div class="fc-right">
+        <div class="fc-status ${statusClass(f.status)}">${f.status}</div>
+        <div class="fc-gate">🚪 Gate ${f.gate}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.ftog').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.ftog').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    flightMode = t.dataset.type;
+    renderFlights();
+  });
+});
+
+renderFlights();
+
+// AD CAROUSEL
+const track = document.getElementById('adTrack');
+const dotsWrap = document.getElementById('adDots');
+const slides = document.querySelectorAll('.ad-slide');
+let adIdx = 0, adInterval;
+
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => { scrollAd(i); resetAdTimer(); });
+  dotsWrap.appendChild(d);
+});
+
+function scrollAd(i) {
+  adIdx = i;
+  track.scrollTo({ left: slides[0].offsetWidth * i, behavior: 'smooth' });
+  document.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('active', j === i));
+}
+
+function resetAdTimer() {
+  clearInterval(adInterval);
+  adInterval = setInterval(() => scrollAd((adIdx + 1) % slides.length), 4000);
+}
+
+track.addEventListener('scroll', () => {
+  const w = slides[0].offsetWidth;
+  const idx = Math.round(track.scrollLeft / w);
+  if (idx !== adIdx && idx < slides.length) { adIdx = idx; document.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('active', j === idx)); }
+});
+
+resetAdTimer();
+
+// AUTH
+function openModal(showReg = false) {
+  document.getElementById('authModal').classList.add('active');
+  document.getElementById('loginForm').style.display = showReg ? 'none' : 'block';
+  document.getElementById('registerForm').style.display = showReg ? 'block' : 'none';
+  document.getElementById('modalMsg').className = 'modal-msg';
+  ['loginEmail','loginPass','regName','regEmail','regPass'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+}
+
+function closeModal() { document.getElementById('authModal').classList.remove('active'); }
+
+document.getElementById('authModal').addEventListener('click', e => { if (e.target === document.getElementById('authModal')) closeModal(); });
+document.getElementById('showRegister').addEventListener('click', e => { e.preventDefault(); document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; document.getElementById('modalMsg').className = 'modal-msg'; });
+document.getElementById('showLogin').addEventListener('click', e => { e.preventDefault(); document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; document.getElementById('modalMsg').className = 'modal-msg'; });
+
+function modalMsg(text, type) {
+  const m = document.getElementById('modalMsg');
+  m.textContent = text;
+  m.className = `modal-msg ${type}`;
+  setTimeout(() => { m.className = 'modal-msg'; }, 3500);
+}
+
+document.getElementById('registerSubmitBtn').addEventListener('click', () => {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if (!name || !email || !pass) return modalMsg('Please fill in all fields.', 'err');
+  if (pass.length < 6) return modalMsg('Password must be at least 6 characters.', 'err');
+  let users = JSON.parse(localStorage.getItem('mcia_users')) || [];
+  if (users.find(u => u.email === email)) return modalMsg('Email already registered!', 'err');
+  const newUser = { id: Date.now(), name, email, password: btoa(pass), points: 5280 };
+  users.push(newUser);
+  localStorage.setItem('mcia_users', JSON.stringify(users));
+  currentUser = { uid: newUser.id, name, email, points: 5280 };
+  localStorage.setItem('mcia_user', JSON.stringify(currentUser));
+  modalMsg('Account created! Welcome aboard 🎉', 'ok');
+  setTimeout(() => { closeModal(); updateProfile(); showToast(`✈️ Welcome, ${name}! You have 5,280 GetGo points.`); }, 1500);
+});
+
+document.getElementById('loginSubmitBtn').addEventListener('click', () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) return modalMsg('Please enter email and password.', 'err');
+  let users = JSON.parse(localStorage.getItem('mcia_users')) || [];
+  const user = users.find(u => u.email === email && u.password === btoa(pass));
+  if (!user) return modalMsg('Incorrect email or password.', 'err');
+  currentUser = { uid: user.id, name: user.name, email: user.email, points: user.points };
+  localStorage.setItem('mcia_user', JSON.stringify(currentUser));
+  modalMsg(`Welcome back, ${user.name}! 👋`, 'ok');
+  setTimeout(() => { closeModal(); updateProfile(); showToast(`✅ Logged in as ${user.name}`); }, 1500);
+});
+
+document.getElementById('promptLoginBtn').addEventListener('click', () => openModal());
+document.getElementById('notifBtn').addEventListener('click', () => showToast('🔔 No new notifications right now.'));
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  currentUser = null;
+  localStorage.removeItem('mcia_user');
+  updateProfile();
+  showToast('🔓 You have been logged out.');
+});
+
+// PROFILE UI UPDATE
+function updateProfile() {
+  const tc = document.getElementById('ticketCard');
+  const lc = document.getElementById('loginCard');
+  if (currentUser) {
+    document.getElementById('profileName').textContent = currentUser.name;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    document.getElementById('profilePoints').textContent = (currentUser.points || 5280).toLocaleString();
+    document.getElementById('profileTag').textContent = '🌟 Logged In';
+    document.getElementById('profileTag').classList.remove('guest');
+    document.getElementById('savedPassengers').textContent = currentUser.name;
+    document.getElementById('logoutBtn').style.display = 'block';
+    tc.classList.remove('ticket-hidden');
+    lc.style.display = 'none';
+  } else {
+    document.getElementById('profileName').textContent = 'Guest User';
+    document.getElementById('profileEmail').textContent = 'Not logged in';
+    document.getElementById('profilePoints').textContent = '0';
+    document.getElementById('profileTag').textContent = '🔓 Guest Mode';
+    document.getElementById('profileTag').classList.add('guest');
+    document.getElementById('savedPassengers').textContent = 'None — login to save';
+    document.getElementById('logoutBtn').style.display = 'none';
+    tc.classList.add('ticket-hidden');
+    lc.style.display = 'block';
+  }
+}
+
+// GATE CHANGE ALERT (10s after load)
+let alerted = false;
+setTimeout(() => {
+  if (alerted) return; alerted = true;
+  const area = document.getElementById('homeAlertArea');
+  if (!area) return;
+  const div = document.createElement('div');
+  div.className = 'alert-banner';
+  div.innerHTML = `<span class="alert-icon">⚠️</span><span class="alert-text"><strong>Gate Change:</strong> Flight 5J 584 now departs from Gate <strong>C7</strong>. 5 min walk from B3.</span><button class="alert-close" onclick="this.parentElement.remove()">✕</button>`;
+  area.appendChild(div);
+  if (currentPage === 'home') showToast('⚠️ Gate change: 5J 584 now at Gate C7');
+}, 10000);
+
+// INIT
+window.addEventListener('load', () => {
+  updateProfile();
+  setTimeout(() => showToast('✨ Welcome to MCIA Flow! Your smart airport companion. ✈️'), 800);
+});
+</script>
+</body>
+</html>
