@@ -131,9 +131,11 @@
     .search-icon {
       position: absolute;
       left: 14px;
-      font-size: 14px;
-      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       pointer-events: none;
+      z-index: 2;
     }
     .search-input {
       width: 100%;
@@ -225,17 +227,40 @@
 
     .welcome-strip {
       margin: 18px 20px 0;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
       border-radius: 20px;
       padding: 18px 20px;
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 90px;
+    }
+    .welcome-strip .ws-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
+      border-radius: 20px;
+    }
+    .welcome-strip .ws-gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: 20px;
+      background: linear-gradient(to right, rgba(10,37,64,0.92) 0%, rgba(10,37,64,0.7) 40%, rgba(10,37,64,0.15) 75%, transparent 100%);
+    }
+    .welcome-text {
+      position: relative;
+      z-index: 2;
     }
     .welcome-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .welcome-text p { font-size: 12px; color: rgba(255,255,255,0.65); }
-    .welcome-icon { font-size: 38px; }
+    .welcome-icon { display: none; }
 
     .quick-grid {
       display: grid;
@@ -728,8 +753,8 @@
   <div class="status-bar">
     <span>9:41</span>
     <div class="status-right">
-      <span><img src="https://picsum.photos/12/12?random=sig1" class="emoji-placeholder" alt="signal"></span>
-      <span><img src="https://picsum.photos/12/12?random=batt" class="emoji-placeholder" alt="battery"></span>
+      <span><img src="internet.png" class="emoji-placeholder" alt="signal"></span>
+      <span><img src="low-battery.png" class="emoji-placeholder" alt="battery"></span>
       <span>94%</span>
     </div>
   </div>
@@ -753,7 +778,10 @@
     </div>
     <div class="search-wrap">
       <span class="search-icon">
-        <img src="search.png" class="emoji-placeholder" alt="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
       </span>
       <input class="search-input" id="searchInput" type="text" placeholder="Search flights, shops, gates…">
     </div>
@@ -785,12 +813,11 @@
 
     <div class="page active" id="homePage">
       <div class="welcome-strip">
+        <img class="ws-bg" src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAGhXSctX1jn6DkwoC2buJqU0STToeMaH8CEcjO4kDVv95Fw2N_uYHvktmiIM3biAitsG1WSjgKPVXUjfu9YWuynHPzZpnwiMKa53_Qp5LjMkMEstLvQUofPGExGqU_0MYZb5h-JR5hGQMY=s680-w680-h510-rw" alt="MCIA">
+        <div class="ws-gradient"></div>
         <div class="welcome-text">
           <h3>Welcome to MCIA! </h3>
           <p>Your smart airport companion</p>
-        </div>
-        <div class="welcome-icon">
-          <img src="https://lh3.googleusercontent.com/gps-cs-s/APNQkAGhXSctX1jn6DkwoC2buJqU0STToeMaH8CEcjO4kDVv95Fw2N_uYHvktmiIM3biAitsG1WSjgKPVXUjfu9YWuynHPzZpnwiMKa53_Qp5LjMkMEstLvQUofPGExGqU_0MYZb5h-JR5hGQMY=s680-w680-h510-rw" class="emoji-placeholder" alt="Philippines flag">
         </div>
       </div>
 
@@ -827,7 +854,7 @@
           <div class="venue-sub">T1 ↔ T2 Free</div>
         </div>
         <div class="venue-card" data-toast="🏧 ATM: Available at Level 1 near arrival area and Level 2 departure hall. BancNet & Visa accepted.">
-          <div class="venue-icon">🏧</div>
+          <div class="venue-icon"><img src="atm-machine.png" class="emoji-placeholder" alt="ATM"></div>
           <div class="venue-name">ATM</div>
           <div class="venue-sub">Level 1 & 2</div>
         </div>
@@ -864,7 +891,7 @@
       </div>
       <div class="hscroll" style="margin-bottom:4px;">
         <div class="venue-card" data-toast="🥭 Pasalubong Center: Dried mangoes, otap, rosquillos & more. Ground floor.">
-          <div class="venue-icon"><img src="https://picsum.photos/38/38?random=mango" class="emoji-placeholder" alt="mango"></div>
+          <div class="venue-icon"><img src="https://scontent.fceb6-1.fna.fbcdn.net/v/t39.30808-6/318438272_128907133340921_7780967784417187442_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=1d70fc&_nc_eui2=AeE-1Fh6ed-cn5pssMLMcqQz-FWYdm2fuOX4VZh2bZ-45QYeOjYXooKaD3x49x0SWTAyLQwJnKjsKbB9vpkmgCAQ&_nc_ohc=GIGX7EO3i7sQ7kNvwExDwaY&_nc_oc=AdpkmGoiga-fPR_6awSe8ZBDVw7wjx_RjZGlh8RU5qyqq7A-o0QqxCyGuL8Z8ZrV2v8&_nc_zt=23&_nc_ht=scontent.fceb6-1.fna&_nc_gid=PS7KPXsRPTRWmzwSG_97jw&oh=00_Af3hYPRZSYF5YPTdK-TNC6dl-AKPmHHT4hQPras1bsw-xQ&oe=69F21CDE" class="emoji-placeholder" alt="mango"></div>
           <div class="venue-name">Pasalubong</div>
           <div class="venue-sub">Souvenirs & gifts</div>
         </div>
@@ -918,17 +945,14 @@
         <div class="map-sub">Mactan-Cebu International Airport</div>
         <div class="map-grid">
           <div class="map-block highlight">
-            <span class="map-block-icon"><img src="https://picsum.photos/18/18?random=loc" class="emoji-placeholder" alt="location"></span>
+            <span class="map-block-icon"><img src="maps-and-flags.png" class="emoji-placeholder" alt="location"></span>
             <span>T2 (You are here)</span>
           </div>
           <div class="map-block">
-            <span class="map-block-icon"><img src="https://picsum.photos/18/18?random=loc2" class="emoji-placeholder" alt="location"></span>
+            <span class="map-block-icon"></span>
             <span>Terminal 1</span>
           </div>
-          <div class="map-block">
-            <span class="map-block-icon">🏧</span>
-            <span>ATM (Level 1 & 2)</span>
-          </div>
+          
         </div>
       </div>
 
@@ -940,7 +964,7 @@
         <span class="amenity-arrow">›</span>
       </div>
       <div class="amenity-row" data-toast="🏧 ATM: Level 1 near arrival area and Level 2 departure hall.">
-        <div class="amenity-icon">🏧</div>
+        <div class="amenity-icon"><img src="atm-machine.png" class="emoji-placeholder" alt="ATM"></div>
         <div class="amenity-info"><div class="amenity-name">ATM</div><div class="amenity-sub">Levels 1 & 2 </div></div>
         <span class="amenity-arrow">›</span>
       </div>
@@ -978,11 +1002,11 @@
 
       <div class="points-banner">
         <div>
-          <div class="points-label"><img src="https://picsum.photos/12/12?random=star" class="emoji-placeholder" alt="star"> GetGo Points</div>
+          <div class="points-label">GetGo Points</div>
           <div class="points-val" id="profilePoints">0</div>
           <div style="font-size:11px; opacity:0.8;">Login to earn rewards!</div>
         </div>
-        <div class="points-right"><img src="https://picsum.photos/30/30?random=medal" class="emoji-placeholder" alt="medal"></div>
+        <div class="points-right"></div>
       </div>
 
       <div class="section-head"><span class="section-title"> Preferences</span></div>
@@ -1019,7 +1043,7 @@
   <div class="bottom-nav">
     <div class="nav-item active" data-page="home"><span class="nav-icon"><img src="home.png" class="emoji-placeholder" alt="home"></span>Home</div>
     <div class="nav-item" data-page="trip"><span class="nav-icon"><img src="https://images.vexels.com/media/users/3/242810/isolated/preview/faf4f5ad02d6d68cfeafa44e1b57649a-plane-semi-flat.png" class="emoji-placeholder" alt="depart"></span>My Trip</div>
-    <div class="nav-item" data-page="map"><span class="nav-icon"><img src="https://picsum.photos/22/22?random=map3" class="emoji-placeholder" alt="map"></span>Map</div>
+    <div class="nav-item" data-page="map"><span class="nav-icon"><img src="maps-and-flags.png" class="emoji-placeholder" alt="map"></span>Map</div>
     <div class="nav-item" data-page="profile"><span class="nav-icon"><img src="user.png" class="emoji-placeholder" alt="user"></span>Profile</div>
   </div>
 
@@ -1030,7 +1054,7 @@
     <div class="modal-handle"></div>
 
     <div id="loginForm">
-      <div class="modal-title"><img src="https://picsum.photos/22/22?random=wave" class="emoji-placeholder" alt="wave"> Welcome back</div>
+      <div class="modal-title"> Welcome back</div>
       <input type="email" class="modal-input" id="loginEmail" placeholder="Email address">
       <input type="password" class="modal-input" id="loginPass" placeholder="Password">
       <button class="modal-btn" id="loginSubmitBtn">Log In</button>
